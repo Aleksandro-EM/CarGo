@@ -16,6 +16,7 @@
 - Created Amazon RDS database endpoint.
 - Created Trello Board.
 - Watched the assigned videos.
+- Created User Entity & users DB Table
 2. To do until next Scrum:
 - Create user stories on the Trello board.
 3. Need assistance / figure things out
