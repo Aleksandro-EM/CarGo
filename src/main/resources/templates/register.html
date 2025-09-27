@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+
+<section layout:fragment="content">
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px;">
+            <h2 class="text-center mb-4">Create an Account</h2>
+            <form th:action="@{/register}" th:object="${user}" method="post" novalidate>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input id="email" type="email" th:field="*{email}"
+                           class="form-control" placeholder="Enter email" required>
+                    <div class="invalid-feedback d-block"
+                         th:if="${#fields.hasErrors('email')}"
+                         th:errors="*{email}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">First Name</label>
+                    <input id="firstName" type="text" th:field="*{firstName}"
+                           class="form-control" placeholder="Enter First Name" required>
+                    <div class="invalid-feedback d-block"
+                         th:if="${#fields.hasErrors('firstName')}"
+                         th:errors="*{firstName}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Last Name</label>
+                    <input id="lastName" type="text" th:field="*{lastName}"
+                           class="form-control" placeholder="Enter Last Name" required>
+                    <div class="invalid-feedback d-block"
+                         th:if="${#fields.hasErrors('lastName')}"
+                         th:errors="*{lastName}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input id="phoneNumber" type="text" th:field="*{phoneNumber}"
+                           class="form-control" placeholder="Enter Phone Number" required>
+                    <div class="invalid-feedback d-block"
+                         th:if="${#fields.hasErrors('phoneNumber')}"
+                         th:errors="*{phoneNumber}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input id="password" type="password" th:field="*{password}"
+                           class="form-control" placeholder="Enter password" required autocomplete="new-password">
+                    <div class="invalid-feedback d-block"
+                         th:if="${#fields.hasErrors('password')}"
+                         th:errors="*{password}"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input id="confirmPassword" type="password" th:field="*{confirmPassword}"
+                           class="form-control" placeholder="Re-enter password" required autocomplete="new-password">
+                    <div class="invalid-feedback d-block"
+                         th:if="${#fields.hasErrors('confirmPassword')}"
+                         th:errors="*{confirmPassword}"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Register</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <small>Already have an account?
+                    <a th:href="@{/login}" class="text-decoration-none">Login</a>
+                </small>
+            </div>
+        </div>
+    </div>
+</section>
+</html>
