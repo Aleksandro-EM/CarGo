@@ -1,0 +1,23 @@
+2025/09/26 Kirththiga
+1. Done / not done since last scrum:
+- Finished project proposal.
+- Created a database in Aleksandro's Amazon RDS.
+- Created a GitHub repository.
+- Watched the assigned videos.
+2. To do until next Scrum:
+- Create user stories on the Trello board.
+3. Need assistance / figure things out
+- Stripe API
+- Finding car availability based on reservation end dates.
+
+2025/09/26 Aleksandro
+1. Done / not done since last scrum:
+- Finished project proposal.
+- Created Amazon RDS database endpoint.
+- Created Trello Board.
+- Watched the assigned videos.
+2. To do until next Scrum:
+- Create user stories on the Trello board.
+3. Need assistance / figure things out
+- Stripe API
+- Finding car availability based on reservation end dates.
