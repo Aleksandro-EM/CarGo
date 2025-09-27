@@ -1,7 +1,6 @@
 package com.project.CarGo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -23,9 +22,8 @@ public class User {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @Email
     @NotBlank(message="Email is required.")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message="Please enter a valid email")
+    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message="Please enter a valid email.")
     private String email;
 
     @NotBlank(message="First name is required.")
@@ -36,7 +34,13 @@ public class User {
     @Size(min=2, max=30, message="Please enter a reasonably sized last name.")
     private String lastName;
 
+    @NotBlank(message="Phone number is required.")
+    @Pattern(regexp = "[+]?(?:\\(\\d+(?:\\.\\d+)?\\)|\\d+(?:\\.\\d+)?)(?:[ -]?(?:\\(\\d+(?:\\.\\d+)?\\)|\\d+(?:\\.\\d+)?))*(?:[ ]?(?:x|ext)\\.?[ ]?\\d{1,5})?",
+            message="Please enter a valid phone number")
+    private String phoneNumber;
+
     @NotBlank(message="Password is required.")
+    @Size(min = 8, message = "Password must be at least 8 characters.")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
             message="Password must include an uppercase character, a lowercase character, a number and a " +
                     "special character.")
@@ -45,8 +49,6 @@ public class User {
     @Column(nullable = false)
     private String role = "ROLE_USER";
 
-    private int phone;
-
     private String driversLicenseUrl;
 
     @DateTimeFormat
@@ -54,5 +56,9 @@ public class User {
 
     @DateTimeFormat
     private Date updateDate;
+
+    @Transient
+    @NotBlank(message = "Please confirm your password")
+    private String confirmPassword;
 
 }
