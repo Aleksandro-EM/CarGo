@@ -61,7 +61,13 @@ public class AuthController {
 
         redirectAttributes.addFlashAttribute("message", "Registration Successful");
 
-        return "redirect:/login";
+        return "redirect:/login?registered";
 
     }
+
+    @GetMapping("/login")
+    public String showLoginForm() {
+        return "login";
+    }
+
 }
