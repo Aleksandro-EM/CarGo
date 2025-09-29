@@ -1,6 +1,7 @@
 package com.project.CarGo.controller;
 
 import com.project.CarGo.entity.Category;
+import com.project.CarGo.entity.CategorySubtype;
 import com.project.CarGo.entity.CategoryType;
 import com.project.CarGo.repository.CategoryRepository;
 import jakarta.validation.Valid;
@@ -21,32 +22,26 @@ public class CategoryController {
 
     @GetMapping("/admin/category/add")
     public String showAddCategoryForm(Model model) {
-        if(!model.containsAttribute("category")) {
-            model.addAttribute("category", new Category());
-        }
-
-        model.addAttribute("categories", CategoryType.values());
+        model.addAttribute("category", new Category());
+        model.addAttribute("types", CategoryType.values());
+        model.addAttribute("subtypes", CategorySubtype.values());
+        model.addAttribute("categories", categoryRepository.findAll());
         return "category-add";
     }
 
     @PostMapping("/admin/category/add")
     public String addCategory(@Valid @ModelAttribute("category") Category category,
-                              BindingResult bindingResult,
+                              BindingResult bindingResult, Model model,
                               RedirectAttributes redirectAttributes) {
 
-        // Validate subtype matches enum
-        if (category.getType() != null && !category.getType().isSubtype(category.getSubtype())) {
-            bindingResult.rejectValue("subtype", "error.subtype",
-                    "Invalid subtype for selected type.");
-        }
-
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("category", category);
-            return "redirect:/categories/add";
+            model.addAttribute("types", CategoryType.values());
+            model.addAttribute("subtypes", CategorySubtype.values());
+            return "category-add";
         }
 
         categoryRepository.save(category);
-        redirectAttributes.addFlashAttribute("success", true);
-        return "redirect:/categories/add";
+        redirectAttributes.addFlashAttribute("success", "Category was added successfully!");
+        return "redirect:/admin/category/add";
     }
 }

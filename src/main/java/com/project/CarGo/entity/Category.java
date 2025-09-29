@@ -22,18 +22,11 @@ public class Category {
     @Column(nullable = false)
     private CategoryType type;
 
-    @NotBlank(message = "Subtype is required")
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Subtype is required")
     @Column(name= "subtype", nullable = false)
-    private String subtype;
+    private CategorySubtype subtype;
 
     @Column(name = "image_url")
     private String imageUrl;
-
-    @PrePersist
-    @PreUpdate
-    private void validateSubType() {
-        if(type == null || subtype == null || !type.isSubtype(subtype)) {
-            throw new IllegalArgumentException("Invalid subtype: " + subtype + " for category type: " + type);
-        }
-    }
 }
