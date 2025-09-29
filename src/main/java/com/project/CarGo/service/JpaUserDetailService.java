@@ -1,4 +1,4 @@
-package com.project.CarGo.Service;
+package com.project.CarGo.service;
 
 import com.project.CarGo.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +21,7 @@ public class JpaUserDetailService implements UserDetailsService {
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
+                .roles(user.getRole().replace("ROLE_", ""))
                 .build();
-
     }
 }
