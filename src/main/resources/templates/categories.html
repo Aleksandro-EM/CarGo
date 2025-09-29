@@ -9,7 +9,7 @@
 <section layout:fragment="content">
     <div class="container mt-5">
 
-        <h2 class="mb-4">Categories</h2>
+        <h2 class="text-center mb-4">Categories</h2>
 
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
@@ -22,7 +22,7 @@
             <p>No categories yet!</p>
         </div>
 
-        <table class="table table-bordered table-striped" id="categories-table" th:if="${!#lists.isEmpty(categories)}">
+        <table class="table table-bordered table-striped" id="table" th:if="${!#lists.isEmpty(categories)}">
             <thead>
             <tr>
                 <th>Type</th>
