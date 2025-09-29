@@ -22,3 +22,25 @@
 3. Need assistance / figure things out
 - Stripe API
 - Finding car availability based on reservation end dates.
+
+2025/09/29 Kirththiga
+1. Done / not done since last scrum:
+- Created a few user stories.
+- Finished admin can view categories and manage categories user stories.
+- Reviewed and tested Alex's user stories: Users can register, and can log in & log out.
+2. To do until next Scrum:
+- Work on user story - Admin can manage vehicles.
+3. Need assistance / figure things out
+- Stripe API
+- Finding car availability based on reservation end dates.
+
+2025/09/29 Aleksandro
+1. Done / not done since last scrum:
+- Created a few user stories.
+- Completed user stories: Users can register, can log in & log out.
+- Reviewed and tested Kirththiga's user stories: admin can view categories, and manage categories user stories.
+2. To do until next Scrum:
+- Work on user story - Admin can manage reservations.
+3. Need assistance / figure things out
+- Stripe API
+- Finding car availability based on reservation end dates.
