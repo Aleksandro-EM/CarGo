@@ -5,7 +5,9 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Entity
-@Table(name = "categories")
+@Table(name="categories", uniqueConstraints = {
+        @UniqueConstraint(name = "uk_types_subtypes", columnNames = {"type", "subtype"})
+})
 @Data
 @Getter
 @Setter
