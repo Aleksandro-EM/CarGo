@@ -22,7 +22,6 @@
                   th:object="${category}" method="POST">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-                <!-- Type -->
                 <div class="mb-3">
                     <label class="form-label" for="type">Type</label>
                     <select id="type" th:field="*{type}" class="form-select">
@@ -34,7 +33,6 @@
                     <div th:if="${#fields.hasErrors('type')}" class="alert alert-danger" th:errors="*{type}"></div>
                 </div>
 
-                <!-- Subtype -->
                 <div class="mb-3">
                     <label class="form-label" for="subtype">Subtype</label>
                     <select id="subtype" th:field="*{subtype}" class="form-select">
@@ -46,7 +44,6 @@
                     <div th:if="${#fields.hasErrors('subtype')}" class="alert alert-danger" th:errors="*{subtype}"></div>
                 </div>
 
-                <!-- Image URL -->
                 <div class="mb-3">
                     <label class="form-label" for="imageUrl">Image URL</label>
                     <input id="imageUrl" type="text" th:field="*{imageUrl}" class="form-control">
