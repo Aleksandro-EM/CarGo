@@ -24,11 +24,11 @@ public class Vehicle {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Plate number is required")
-    @Size(min = 6, max = 7, message = "Plate number must be 6 to 7 characters")
-    @Pattern(regexp = "^[A-Z0-9]{6,7}$", message = "Username must only contain lowercase letters only")
-    @Column(name= "plate_number", nullable = false, unique = true, length=7)
-    private String plateNumber;
+    @NotBlank(message = "Number plate is required")
+    @Size(min = 6, max = 7, message = "Number plate must be 6 to 7 characters")
+    @Pattern(regexp = "^[A-Z0-9]{6,7}$", message = "Number plate must only contain uppercase letters and numbers only")
+    @Column(name= "number_plate", nullable = false, unique = true, length=7)
+    private String numberPlate;
 
     @NotBlank(message = "Make is required")
     @Column(nullable = false, length=100)
@@ -49,6 +49,7 @@ public class Vehicle {
     @Column(name="current_mileage")
     private Integer currentMileage;
 
+    @NotNull(message = "Category is required")
     @ManyToOne(optional = false)
     @JoinColumn(name="category_id", nullable = false)
     private Category category;
@@ -61,7 +62,7 @@ public class Vehicle {
     @Column(name= "status", nullable = false)
     private VehicleStatus status;
 
-    @DateTimeFormat
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date nextAvailableDate;
 
     @DateTimeFormat

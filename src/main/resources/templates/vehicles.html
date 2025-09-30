@@ -25,9 +25,10 @@
         <table class="table table-bordered table-striped" id="table" th:if="${!#lists.isEmpty(vehicles)}">
             <thead>
             <tr>
-                <th>Plate Number</th>
+                <th>Number Plate</th>
                 <th>Make</th>
                 <th>Model</th>
+                <th>Color</th>
                 <th>Year</th>
                 <th>Current Mileage</th>
                 <th>Category</th>
@@ -41,22 +42,22 @@
             </thead>
             <tbody>
             <tr th:each="vehicle : ${vehicles}">
-                <td th:text="${vehicle.plateNumber}">Plate</td>
+                <td th:text="${vehicle.numberPlate}">Plate</td>
                 <td th:text="${vehicle.make}">Make</td>
                 <td th:text="${vehicle.model}">Model</td>
-                <td th:text="${vehicle.year}">Year</td>
                 <td th:text="${vehicle.color}">Color</td>
+                <td th:text="${vehicle.year}">Year</td>
                 <td th:text="${vehicle.currentMileage}">Mileage</td>
                 <td th:text="${vehicle.category.type} + ' - ' + ${vehicle.category.subtype}">Category</td>
                 <td th:text="${vehicle.dailyRate}">Rate</td>
                 <td th:text="${vehicle.status}">Status</td>
-                <td th:text="${#temporals.format(vehicle.nextAvailableDate, 'yyyy-MM-dd HH:mm')}">Created</td>
-                <td th:text="${#temporals.format(vehicle.createdAt, 'yyyy-MM-dd HH:mm')}">Created</td>
-                <td th:text="${#temporals.format(vehicle.updatedAt, 'yyyy-MM-dd HH:mm')}">Updated</td>
+                <td th:text="${#dates.format(vehicle.nextAvailableDate, 'yyyy-MM-dd HH:mm')}">Created</td>
+                <td th:text="${#dates.format(vehicle.creationDate, 'yyyy-MM-dd')}">Created</td>
+                <td th:text="${#dates.format(vehicle.updateDate, 'yyyy-MM-dd')}">Updated</td>
                 <td>
                     <a th:href="@{'/admin/vehicle/edit/' + ${vehicle.id}}" class="btn btn-sm btn-primary">Update</a>
 
-                    <form th:action="@{'/admin/vehicle/delete/' + ${vehicle.id}}"
+                    <form class="mt-2" th:action="@{'/admin/vehicle/delete/' + ${vehicle.id}}"
                           method="post"
                           th:id="'deleteForm-' + ${vehicle.id}"
                           style="display:inline-block;">
