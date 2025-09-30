@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -64,6 +66,10 @@ public class VehicleController {
             vehicle.setDailyRate(BigDecimal.valueOf(0.00));
         }
 
+        LocalDate twoWeeksLater = LocalDate.now().plusWeeks(2);
+        Date futureDate = Date.from(twoWeeksLater.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        vehicle.setNextAvailableDate(futureDate);
+        
         vehicle.setCreationDate(new Date());
         vehicle.setUpdateDate(new Date());
         vehicleRepository.save(vehicle);
