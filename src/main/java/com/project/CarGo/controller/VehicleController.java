@@ -66,10 +66,7 @@ public class VehicleController {
             vehicle.setDailyRate(BigDecimal.valueOf(0.00));
         }
 
-        LocalDate twoWeeksLater = LocalDate.now().plusWeeks(2);
-        Date futureDate = Date.from(twoWeeksLater.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        vehicle.setNextAvailableDate(futureDate);
-        
+        vehicle.setNextAvailableDate(new Date());
         vehicle.setCreationDate(new Date());
         vehicle.setUpdateDate(new Date());
         vehicleRepository.save(vehicle);
@@ -97,7 +94,7 @@ public class VehicleController {
         Vehicle existingVehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle ID: " + id));
 
-        if(!existingVehicle.getId().equals(id)) {
+        if(vehicleRepository.existsByNumberPlate(vehicle.getNumberPlate())) {
             redirectAttributes.addFlashAttribute("error", "This number plate already exists.");
             return "redirect:/admin/vehicle/edit/" + id;
         }
