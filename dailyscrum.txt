@@ -70,3 +70,26 @@
 - Finding car availability based on reservation end dates.
 - Heroku
 - S3
+
+2025/10/01 Kirththiga
+1. Done / not done since last scrum:
+- Finished customer can search for available vehicle categories by date.
+- Reviewed and tested Alex's user story: Admin can manage reservations.
+2. To do until next Scrum:
+- Fix the code for customer can search for available vehicle categories by date based on feedback.
+- Work on user story - Project Setup.
+3. Need assistance / figure things out
+- Stripe API
+- Heroku
+- S3
+
+2025/10/01 Aleksandro
+1. Done / not done since last scrum:
+- Completed user story: Admin can manage reservations.
+- Reviewed and tested Kirththiga's user story: customer can search for available vehicle categories by date.
+2. To do until next Scrum:
+- Work on user story - Customer can view their reservations.
+3. Need assistance / figure things out
+- Stripe API
+- Heroku
+- S3
