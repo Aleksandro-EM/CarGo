@@ -19,13 +19,13 @@
                 <div class="col-md-3">
                     <label for="startDate" class="form-label">Start Date</label>
                     <input type="date" class="form-control" id="startDate" name="startDate"
-                           th:value="${startDate}">
+                           th:value="${startDate != null} ? ${#dates.format(startDate, 'yyyy-MM-dd')} : ''">
                 </div>
 
                 <div class="col-md-3">
                     <label for="endDate" class="form-label">End Date</label>
                     <input type="date" class="form-control" id="endDate" name="endDate"
-                           th:value="${endDate}">
+                           th:value="${endDate != null} ? ${#dates.format(endDate, 'yyyy-MM-dd')} : ''">
                 </div>
 
                 <div class="col-md-4">
@@ -41,7 +41,8 @@
                 </div>
 
                 <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                    <button type="submit" class="btn btn-primary w-100 me-2">Search</button>
+                    <a th:href="@{/vehicles}" class="btn btn-secondary w-100">Clear</a>
                 </div>
 
             </form>
@@ -64,7 +65,7 @@
             </div>
 
             <div th:if="${#lists.isEmpty(vehicles)}" class="text-center">
-                <p>No available vehicles for the selected dates or category.</p>
+                <p>No available vehicles for the selected dates and/or category.</p>
             </div>
 
             <div class="row g-4" th:if="${!#lists.isEmpty(vehicles)}">
