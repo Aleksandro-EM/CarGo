@@ -79,7 +79,7 @@ public class ReservationController {
                                     RedirectAttributes ra) {
 
         if (reservation.getUser() == null || reservation.getUser().getId() == null) {
-            bindingResult.rejectValue("user.id", "user.required", "Please select a user.");
+            bindingResult.rejectValue("user", "user.required", "Please select a user.");
         }
         if (reservation.getVehicleId() == null) {
             bindingResult.rejectValue("vehicleId", "vehicle.required", "Please select a vehicle.");
@@ -121,7 +121,7 @@ public class ReservationController {
         reservation.setId(id);
 
         if (reservation.getUser() == null || reservation.getUser().getId() == null) {
-            bindingResult.rejectValue("user.id", "user.required", "Please select a user.");
+            bindingResult.rejectValue("user", "user.required", "Please select a user.");
         }
         if (reservation.getVehicleId() == null) {
             bindingResult.rejectValue("vehicleId", "vehicle.required", "Please select a vehicle.");
