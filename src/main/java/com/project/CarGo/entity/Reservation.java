@@ -20,11 +20,13 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "Please select a User")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "userId") // assumes column "user_id" exists in reservations table
+    @JoinColumn(name = "userId")
     private User user;
 
-    @jakarta.validation.constraints.NotNull(message = "Please select a vehicle")
+
+    @jakarta.validation.constraints.NotNull(message="Vehicle Cannot be null.")
     @jakarta.validation.constraints.Positive
     private Long vehicleId;
 
@@ -35,11 +37,11 @@ public class Reservation {
     private double totalPrice;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @NotNull(message = "Start date is required.")
+    @NotNull(message="Start date cannot be null.")
     private java.time.LocalDate reservationStartDate;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @NotNull(message = "End date is required.")
+    @NotNull(message="End date cannot be null.")
     private java.time.LocalDate reservationEndDate;
 
     private String stripePaymentId;

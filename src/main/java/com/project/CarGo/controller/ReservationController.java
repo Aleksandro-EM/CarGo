@@ -78,31 +78,33 @@ public class ReservationController {
                                     Model model,
                                     RedirectAttributes ra) {
 
+        if (reservation.getUser() == null || reservation.getUser().getId() == null) {
+            bindingResult.rejectValue("user.id", "user.required", "Please select a user.");
+        }
+        if (reservation.getVehicleId() == null) {
+            bindingResult.rejectValue("vehicleId", "vehicle.required", "Please select a vehicle.");
+        }
         validateDates(reservation, bindingResult);
 
-        // Ensure vehicle exists
-        var vehicleOpt = vehicleRepository.findById(reservation.getVehicleId());
-        if (vehicleOpt.isEmpty()) {
-            bindingResult.rejectValue("vehicleId", "vehicle.notFound", "Vehicle not found.");
-        }
-
         if (bindingResult.hasErrors()) {
-            model.addAttribute("isEdit", false); // or true in edit
+            model.addAttribute("isEdit", false);
             model.addAttribute("statuses", ReservationStatus.values());
             model.addAttribute("users", userRepository.findAll());
-            model.addAttribute("vehicles", vehicleRepository.findAll()); // <-- add this
+            model.addAttribute("vehicles", vehicleRepository.findAll());
+            if (reservation.getUser() == null) reservation.setUser(new User()); // keep th:field happy
             return "reservation-form";
         }
 
-        // calculate price
-        var vehicle = vehicleOpt.get();
+        var user = userRepository.findById(reservation.getUser().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Selected user not found."));
+        var vehicle = vehicleRepository.findById(reservation.getVehicleId())
+                .orElseThrow(() -> new IllegalArgumentException("Selected vehicle not found."));
+
+        reservation.setUser(user);
+
         double total = reservationService.calculateTotalPrice(vehicle, reservation);
         reservation.setTotalPrice(total);
-
-        // DEfault status
-        if (reservation.getStatus() == null) {
-            reservation.setStatus(ReservationStatus.PENDING);
-        }
+        if (reservation.getStatus() == null) reservation.setStatus(ReservationStatus.PENDING);
 
         reservationRepository.save(reservation);
         ra.addFlashAttribute("success", "Reservation created successfully.");
@@ -110,35 +112,42 @@ public class ReservationController {
     }
 
     @PostMapping("/reservations/edit/{id}")
-    public String updateReservation(@PathVariable Long id, @Valid @ModelAttribute("reservation") Reservation reservation,
+    public String updateReservation(@PathVariable Long id,
+                                    @Valid @ModelAttribute("reservation") Reservation reservation,
                                     org.springframework.validation.BindingResult bindingResult,
                                     Model model,
                                     RedirectAttributes ra) {
 
         reservation.setId(id);
 
+        if (reservation.getUser() == null || reservation.getUser().getId() == null) {
+            bindingResult.rejectValue("user.id", "user.required", "Please select a user.");
+        }
+        if (reservation.getVehicleId() == null) {
+            bindingResult.rejectValue("vehicleId", "vehicle.required", "Please select a vehicle.");
+        }
         validateDates(reservation, bindingResult);
 
-        // Ensure vehicle exists
-        var vehicleOpt = vehicleRepository.findById(reservation.getVehicleId());
-        if (vehicleOpt.isEmpty()) {
-            bindingResult.rejectValue("vehicleId", "vehicle.notFound", "Vehicle not found.");
-        }
-
         if (bindingResult.hasErrors()) {
-            model.addAttribute("isEdit", false); // or true in edit
+            model.addAttribute("isEdit", true); // <-- keep edit mode on error
             model.addAttribute("statuses", ReservationStatus.values());
             model.addAttribute("users", userRepository.findAll());
-            model.addAttribute("vehicles", vehicleRepository.findAll()); // <-- add this
+            model.addAttribute("vehicles", vehicleRepository.findAll());
+            if (reservation.getUser() == null) reservation.setUser(new User());
             return "reservation-form";
         }
 
-        reservationRepository.findById(id).ifPresent(existing ->
-                reservation.setCreationDate(existing.getCreationDate())
-        );
+        var existing = reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found: " + id));
+        reservation.setCreationDate(existing.getCreationDate());
 
-        // Compute price
-        var vehicle = vehicleOpt.get();
+        var user = userRepository.findById(reservation.getUser().getId())
+                .orElseThrow(() -> new IllegalArgumentException("Selected user not found."));
+        var vehicle = vehicleRepository.findById(reservation.getVehicleId())
+                .orElseThrow(() -> new IllegalArgumentException("Selected vehicle not found."));
+
+        reservation.setUser(user);
+
         double total = reservationService.calculateTotalPrice(vehicle, reservation);
         reservation.setTotalPrice(total);
 
@@ -149,11 +158,15 @@ public class ReservationController {
 
     //check if dates make sense
     private void validateDates(Reservation r, org.springframework.validation.Errors errors) {
-        if (r.getReservationStartDate() != null && r.getReservationEndDate() != null) {
-            if (!r.getReservationEndDate().isAfter(r.getReservationStartDate())) {
-                errors.rejectValue("reservationEndDate", "date.invalid",
-                        "End date must be after start date.");
-            }
+        if (r.getReservationStartDate() == null) {
+            errors.rejectValue("reservationStartDate", "date.required", "Please choose a start date.");
+        }
+        if (r.getReservationEndDate() == null) {
+            errors.rejectValue("reservationEndDate", "date.required", "Please choose an end date.");
+        }
+        if (r.getReservationStartDate() != null && r.getReservationEndDate() != null
+                && !r.getReservationEndDate().isAfter(r.getReservationStartDate())) {
+            errors.rejectValue("reservationEndDate", "date.invalid", "End date must be after start date.");
         }
     }
 
