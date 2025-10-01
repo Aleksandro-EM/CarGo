@@ -70,4 +70,7 @@ public class Vehicle {
 
     @DateTimeFormat
     private Date updateDate;
+
+    @Transient
+    private BigDecimal totalPrice;
 }
