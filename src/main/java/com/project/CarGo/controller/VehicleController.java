@@ -126,7 +126,8 @@ public class VehicleController {
     }
 
     @GetMapping("/vehicles")
-    public String showFormToDisplayAvailableVehicles() {
+    public String showFormToDisplayAvailableVehicles(Model model) {
+        model.addAttribute("categories", categoryRepository.findAll());
         return "index-vehicles";
     }
 
