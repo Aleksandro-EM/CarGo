@@ -25,6 +25,9 @@
         <table class="table table-bordered table-striped" id="table" th:if="${!#lists.isEmpty(reservations)}">
             <thead>
             <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone</th>
                 <th>Vehicle ID</th>
                 <th>Status</th>
                 <th>Total Price</th>
@@ -35,11 +38,14 @@
             </thead>
             <tbody>
             <tr th:each="reservation : ${reservations}">
-                <td th:text="${reservation.vehicleId}">Vehicle ID</td>
+                <td th:text="${reservation.user != null ? reservation.user.firstName : '—'}"></td>
+                <td th:text="${reservation.user != null ? reservation.user.lastName  : '—'}"></td>
+                <td th:text="${reservation.user != null ? reservation.user.phoneNumber : '—'}"></td>
+                <td th:text="${reservation.vehicleId}">Vehicle</td>
                 <td th:text="${reservation.status.displayName}">Status</td>
-                <td th:text="${reservation.totalPrice}">Total Price</td>
-                <td th:text="${#dates.format(reservation.reservationStartDate, 'yyyy-MM-dd')}">Start Date</td>
-                <td th:text="${#dates.format(reservation.reservationEndDate,   'yyyy-MM-dd')}">End Date</td>
+                <td th:text="${reservation.totalPrice}">Total</td>
+                <td th:text="${#temporals.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${#temporals.format(reservation.reservationEndDate, 'yyyy-MM-dd')}"></td>
                 <td>
                     <a th:href="@{'/admin/reservations/edit/' + ${reservation.id}}" class="btn btn-sm btn-primary">Update</a>
 
