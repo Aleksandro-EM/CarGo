@@ -27,7 +27,7 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/", true)
+                        .defaultSuccessUrl("/vehicles", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
