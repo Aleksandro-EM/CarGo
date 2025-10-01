@@ -17,7 +17,7 @@ public class ReservationService {
         var start = reservation.getReservationStartDate();
         var end   = reservation.getReservationEndDate();
 
-        long days = java.time.temporal.ChronoUnit.DAYS.between(start, end);
+        long days = ((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
         if (days <= 0) days = 1;
 
         return vehicle.getDailyRate().multiply(java.math.BigDecimal.valueOf(days)).doubleValue();

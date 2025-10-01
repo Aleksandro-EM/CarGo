@@ -36,31 +36,30 @@ public class Reservation {
 
     private double totalPrice;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message="Start date cannot be null.")
-    private java.time.LocalDate reservationStartDate;
+    private Date reservationStartDate;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message="End date cannot be null.")
-    private java.time.LocalDate reservationEndDate;
+    private Date reservationEndDate;
 
     private String stripePaymentId;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private java.time.OffsetDateTime creationDate;
+    @DateTimeFormat
+    private Date creationDate;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private java.time.OffsetDateTime updateDate;
+    @DateTimeFormat
+    private Date updateDate;
 
     @PrePersist
     void prePersist() {
-        var now = java.time.OffsetDateTime.now();
-        creationDate = now;
-        updateDate = now;
+        this.creationDate = new Date();
+        this.updateDate = new Date();
     }
 
     @PreUpdate
-    void preUpdate() {
-        updateDate = java.time.OffsetDateTime.now();
+    void onUpdate() {
+        updateDate = new Date();
     }
 }

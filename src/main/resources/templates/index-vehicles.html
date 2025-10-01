@@ -68,7 +68,7 @@
             </div>
 
             <div class="row g-4" th:if="${!#lists.isEmpty(vehicles)}">
-                <div class="col-12" th:each="vehicle : ${vehicles}">
+                <div class="col-md-6" th:each="vehicle : ${vehicles}">
                     <div class="card shadow-sm mb-3">
                         <div class="row g-0">
 
@@ -81,7 +81,6 @@
 
                             <div class="col-md-8">
                                 <div class="card-body">
-
                                     <div class="d-flex justify-content-between mb-1">
                                         <h5 class="card-title mb-0" th:text="${vehicle.make} + ' ' + ${vehicle.model}"></h5>
                                         <div class="text-primary"

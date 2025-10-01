@@ -150,7 +150,7 @@ public class ReservationController {
 
         double total = reservationService.calculateTotalPrice(vehicle, reservation);
         reservation.setTotalPrice(total);
-
+        
         reservationRepository.save(reservation);
         ra.addFlashAttribute("success", "Reservation updated successfully.");
         return "redirect:/admin/reservations";
@@ -165,7 +165,7 @@ public class ReservationController {
             errors.rejectValue("reservationEndDate", "date.required", "Please choose an end date.");
         }
         if (r.getReservationStartDate() != null && r.getReservationEndDate() != null
-                && !r.getReservationEndDate().isAfter(r.getReservationStartDate())) {
+                && r.getReservationEndDate().before(r.getReservationStartDate())) {
             errors.rejectValue("reservationEndDate", "date.invalid", "End date must be after start date.");
         }
     }

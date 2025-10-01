@@ -44,8 +44,8 @@
                 <td th:text="${reservation.vehicleId}">Vehicle</td>
                 <td th:text="${reservation.status.displayName}">Status</td>
                 <td th:text="${reservation.totalPrice}">Total</td>
-                <td th:text="${#temporals.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
-                <td th:text="${#temporals.format(reservation.reservationEndDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${#dates.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${#dates.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
                 <td>
                     <a th:href="@{'/admin/reservations/edit/' + ${reservation.id}}" class="btn btn-sm btn-primary">Update</a>
 
