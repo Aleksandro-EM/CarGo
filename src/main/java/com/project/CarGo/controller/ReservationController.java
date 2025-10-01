@@ -79,7 +79,7 @@ public class ReservationController {
                                     RedirectAttributes ra) {
 
         if (reservation.getUser() == null || reservation.getUser().getId() == null) {
-            bindingResult.rejectValue("user.id", "user.required", "Please select a user.");
+            bindingResult.rejectValue("user", "user.required", "Please select a user.");
         }
         if (reservation.getVehicleId() == null) {
             bindingResult.rejectValue("vehicleId", "vehicle.required", "Please select a vehicle.");
@@ -121,7 +121,7 @@ public class ReservationController {
         reservation.setId(id);
 
         if (reservation.getUser() == null || reservation.getUser().getId() == null) {
-            bindingResult.rejectValue("user.id", "user.required", "Please select a user.");
+            bindingResult.rejectValue("user", "user.required", "Please select a user.");
         }
         if (reservation.getVehicleId() == null) {
             bindingResult.rejectValue("vehicleId", "vehicle.required", "Please select a vehicle.");
@@ -150,7 +150,7 @@ public class ReservationController {
 
         double total = reservationService.calculateTotalPrice(vehicle, reservation);
         reservation.setTotalPrice(total);
-
+        
         reservationRepository.save(reservation);
         ra.addFlashAttribute("success", "Reservation updated successfully.");
         return "redirect:/admin/reservations";
@@ -165,7 +165,7 @@ public class ReservationController {
             errors.rejectValue("reservationEndDate", "date.required", "Please choose an end date.");
         }
         if (r.getReservationStartDate() != null && r.getReservationEndDate() != null
-                && !r.getReservationEndDate().isAfter(r.getReservationStartDate())) {
+                && r.getReservationEndDate().before(r.getReservationStartDate())) {
             errors.rejectValue("reservationEndDate", "date.invalid", "End date must be after start date.");
         }
     }
