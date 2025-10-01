@@ -65,9 +65,6 @@ public class VehicleController {
             vehicle.setDailyRate(BigDecimal.valueOf(0.00));
         }
 
-        vehicle.setNextAvailableDate(new Date());
-        vehicle.setCreationDate(new Date());
-        vehicle.setUpdateDate(new Date());
         vehicleRepository.save(vehicle);
         redirectAttributes.addFlashAttribute("success", "Vehicle was added successfully!");
         return "redirect:/admin/vehicle/add";
@@ -115,17 +112,16 @@ public class VehicleController {
         }
 
         vehicle.setCreationDate(existingVehicle.getCreationDate());
-        vehicle.setUpdateDate(new Date());
         vehicleRepository.save(vehicle);
         redirectAttributes.addFlashAttribute("success", "Vehicle updated successfully!");
         return "redirect:/admin/vehicle/edit/" + id;
     }
 
     @PostMapping("/admin/vehicle/delete/{id}")
-    public String deleteVehicle(@PathVariable("id") Long id, RedirectAttributes ra) {
+    public String deleteVehicle(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
 
         vehicleRepository.deleteById(id);
-        ra.addFlashAttribute("success", "Vehicle deleted successfully!");
+        redirectAttributes.addFlashAttribute("success", "Vehicle deleted successfully!");
         return "redirect:/admin/vehicles";
     }
 
@@ -136,10 +132,28 @@ public class VehicleController {
 
     @GetMapping("/vehicles/available")
     public String findAvailableVehicles(
-            @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-            @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+            @RequestParam(value= "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+            @RequestParam(value= "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
             @RequestParam(value = "categoryId", required = false) Long categoryId,
-            Model model) {
+            Model model, RedirectAttributes redirectAttributes) {
+
+        if(startDate == null && endDate == null) {
+            redirectAttributes.addFlashAttribute("error", "Start and end dates are required");
+            return "redirect:/vehicles";
+        }
+        else if(startDate == null) {
+            redirectAttributes.addFlashAttribute("error", "Start date is required");
+            return "redirect:/vehicles";
+        }
+        else if(endDate == null) {
+            redirectAttributes.addFlashAttribute("error", "End date is required");
+            return "redirect:/vehicles";
+        }
+
+        if(endDate.before(startDate)) {
+            redirectAttributes.addFlashAttribute("error", "End date cannot be before start date.");
+            return "redirect:/vehicles";
+        }
 
         List<Vehicle> vehicles = vehicleRepository.findAvailableVehiclesByDateAndCategory(startDate, endDate, categoryId);
 

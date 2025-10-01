@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -26,7 +28,7 @@ public class Vehicle {
 
     @NotBlank(message = "Number plate is required")
     @Size(min = 6, max = 7, message = "Number plate must be 6 to 7 characters")
-    @Pattern(regexp = "^[A-Z0-9]{6,7}$", message = "Number plate must only contain uppercase letters and numbers only")
+    @Pattern(regexp = "^([A-Z0-9]{6,7}|[A-Z0-9]{3}\\s[A-Z0-9]{3})$", message = "Number plate must only contain uppercase letters and numbers only")
     @Column(name= "number_plate", nullable = false, unique = true, length=7)
     private String numberPlate;
 
@@ -43,6 +45,8 @@ public class Vehicle {
     private String color;
 
     @NotNull(message = "Year is required")
+    @Min(value = 2000, message = "Year must be greater than 2000")
+    @Max(value = 2099, message = "Year must be less than 2099")
     @Column(nullable = false)
     private Integer year;
 
@@ -70,6 +74,18 @@ public class Vehicle {
 
     @DateTimeFormat
     private Date updateDate;
+
+    @PrePersist
+    protected void onCreate() {
+        nextAvailableDate = new Date();
+        creationDate = new Date();
+        updateDate = new Date();
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updateDate = new Date();
+    }
 
     @Transient
     private BigDecimal totalPrice;
