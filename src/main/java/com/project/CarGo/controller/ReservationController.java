@@ -8,13 +8,17 @@ import com.project.CarGo.repository.UserRepository;
 import com.project.CarGo.repository.VehicleRepository;
 import com.project.CarGo.service.ReservationService;
 import jakarta.validation.Valid;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
-@RequestMapping("/admin")
 public class ReservationController {
 
     private final ReservationRepository reservationRepository;
@@ -23,21 +27,21 @@ public class ReservationController {
     private final UserRepository userRepository;
 
 
-    public ReservationController(ReservationRepository reservationRepository, ReservationService reservationService, VehicleRepository vehicleRepository, UserRepository userRepository) {
+    public ReservationController(ReservationRepository reservationRepository, ReservationService reservationService, VehicleRepository vehicleRepository, UserRepository userRepository, SecurityProperties securityProperties) {
         this.reservationRepository = reservationRepository;
         this.reservationService = reservationService;
         this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/reservations")
+    @GetMapping("admin/reservations")
     public String reservations(Model model) {
         var reservations = reservationRepository.findAllWithUser();
         model.addAttribute("reservations", reservations);
         return "reservations";
     }
 
-    @GetMapping("/reservations/add")
+    @GetMapping("admin/reservations/add")
     public String addForm(Model model) {
         if (!model.containsAttribute("reservation")) {
             var r = new Reservation();
@@ -52,7 +56,7 @@ public class ReservationController {
     }
 
 
-    @GetMapping("/reservations/edit/{id}")
+    @GetMapping("admin/reservations/edit/{id}")
     public String editForm(@PathVariable Long id, Model model) {
         var reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found: " + id));
@@ -64,7 +68,7 @@ public class ReservationController {
         return "reservation-form";
     }
 
-    @PostMapping("/reservations/delete/{id}")
+    @PostMapping("admin/reservations/delete/{id}")
     public String deleteReservation(@PathVariable("id") Long id, RedirectAttributes ra) {
 
         reservationRepository.deleteById(id);
@@ -72,7 +76,15 @@ public class ReservationController {
         return "redirect:/admin/reservations";
     }
 
-    @PostMapping("/reservations/add")
+    @PostMapping("user/reservations/delete/{id}")
+    public String deleteUserReservation(@PathVariable("id") Long id, RedirectAttributes ra) {
+
+        reservationRepository.deleteById(id);
+        ra.addFlashAttribute("success", "Reservation deleted successfully!");
+        return "redirect:/user/reservations";
+    }
+
+    @PostMapping("admin/reservations/add")
     public String createReservation(@Valid @ModelAttribute("reservation") Reservation reservation,
                                     org.springframework.validation.BindingResult bindingResult,
                                     Model model,
@@ -111,7 +123,7 @@ public class ReservationController {
         return "redirect:/admin/reservations";
     }
 
-    @PostMapping("/reservations/edit/{id}")
+    @PostMapping("admin/reservations/edit/{id}")
     public String updateReservation(@PathVariable Long id,
                                     @Valid @ModelAttribute("reservation") Reservation reservation,
                                     org.springframework.validation.BindingResult bindingResult,
@@ -156,6 +168,15 @@ public class ReservationController {
         return "redirect:/admin/reservations";
     }
 
+    @GetMapping("/user/reservations")
+    public String showReservationsByUser(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        List<Reservation> reservations  = reservationRepository.findAllByUser_Email(email);
+        model.addAttribute("reservations", reservations);
+        return "user-reservations";
+    }
+
     //check if dates make sense
     private void validateDates(Reservation r, org.springframework.validation.Errors errors) {
         if (r.getReservationStartDate() == null) {
@@ -169,5 +190,4 @@ public class ReservationController {
             errors.rejectValue("reservationEndDate", "date.invalid", "End date must be after start date.");
         }
     }
-
 }
