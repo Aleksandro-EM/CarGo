@@ -76,6 +76,14 @@ public class ReservationController {
         return "redirect:/admin/reservations";
     }
 
+    @PostMapping("user/reservations/delete/{id}")
+    public String deleteUserReservation(@PathVariable("id") Long id, RedirectAttributes ra) {
+
+        reservationRepository.deleteById(id);
+        ra.addFlashAttribute("success", "Reservation deleted successfully!");
+        return "redirect:/user/reservations";
+    }
+
     @PostMapping("admin/reservations/add")
     public String createReservation(@Valid @ModelAttribute("reservation") Reservation reservation,
                                     org.springframework.validation.BindingResult bindingResult,
@@ -182,5 +190,4 @@ public class ReservationController {
             errors.rejectValue("reservationEndDate", "date.invalid", "End date must be after start date.");
         }
     }
-
 }

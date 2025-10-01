@@ -43,7 +43,7 @@
                 <td th:text="${#dates.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
                 <td th:text="${#dates.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
                 <td>
-                    <form th:action="@{'/admin/reservations/delete/' + ${reservation.id}}"
+                    <form th:action="@{'/user/reservations/delete/' + ${reservation.id}}"
                           method="post"
                           th:id="'deleteForm-' + ${reservation.id}"
                           style="display:inline-block;">
