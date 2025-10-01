@@ -9,43 +9,56 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 @Entity
-@Data
+@Table(name = "reservations" /*, uniqueConstraints = {} <-- remove the email constraint */)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "reservations", uniqueConstraints = {
-        @UniqueConstraint(name = "uk_users_email", columnNames = "email")
-})
 public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private Long id;
 
-    @NotBlank(message = "Reservation must be linked with a User ID.")
-    long userId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "userId") // assumes column "user_id" exists in reservations table
+    private User user;
 
-    @NotBlank(message = "Reservation must be linked to a valid vehicle ID")
-    long vehicleId;
+    @jakarta.validation.constraints.NotNull(message = "Please select a vehicle")
+    @jakarta.validation.constraints.Positive
+    private Long vehicleId;
 
     @Enumerated(EnumType.STRING)
-    ReservationStatus status;
+    @NotNull(message = "Status is required.")
+    private ReservationStatus status;
 
-    double totalPrice;
+    private double totalPrice;
 
-    @DateTimeFormat
-    Date reservationStartDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @NotNull(message = "Start date is required.")
+    private java.time.LocalDate reservationStartDate;
 
-    @DateTimeFormat
-    Date reservationEndDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @NotNull(message = "End date is required.")
+    private java.time.LocalDate reservationEndDate;
 
-    String stripePaymentId;
+    private String stripePaymentId;
 
-    @DateTimeFormat
-    Date creationDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private java.time.OffsetDateTime creationDate;
 
-    @DateTimeFormat
-    Date updateDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private java.time.OffsetDateTime updateDate;
 
+    @PrePersist
+    void prePersist() {
+        var now = java.time.OffsetDateTime.now();
+        creationDate = now;
+        updateDate = now;
+    }
+
+    @PreUpdate
+    void preUpdate() {
+        updateDate = java.time.OffsetDateTime.now();
+    }
 }
