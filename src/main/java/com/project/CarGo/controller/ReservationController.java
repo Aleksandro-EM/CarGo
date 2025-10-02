@@ -118,8 +118,12 @@ public class ReservationController {
         reservation.setTotalPrice(total);
         if (reservation.getStatus() == null) reservation.setStatus(ReservationStatus.PENDING);
 
+        if (reservationService.checkReservationOverlap(reservation)) {
+            ra.addFlashAttribute("error", "Reservation add failed. Reservation overlap.");
+            return "redirect:/admin/reservations";
+        }
         reservationRepository.save(reservation);
-        ra.addFlashAttribute("success", "Reservation created successfully.");
+        ra.addFlashAttribute("success", "Reservation added successfully.");
         return "redirect:/admin/reservations";
     }
 
@@ -162,7 +166,10 @@ public class ReservationController {
 
         double total = reservationService.calculateTotalPrice(vehicle, reservation);
         reservation.setTotalPrice(total);
-        
+        if (reservationService.checkReservationOverlap(reservation)) {
+            ra.addFlashAttribute("error", "Reservation update failed. Reservation overlap.");
+            return "redirect:/admin/reservations";
+        }
         reservationRepository.save(reservation);
         ra.addFlashAttribute("success", "Reservation updated successfully.");
         return "redirect:/admin/reservations";
@@ -172,7 +179,7 @@ public class ReservationController {
     public String showReservationsByUser(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        List<Reservation> reservations  = reservationRepository.findAllByUser_Email(email);
+        List<Reservation> reservations = reservationRepository.findAllByUser_Email(email);
         model.addAttribute("reservations", reservations);
         return "user-reservations";
     }

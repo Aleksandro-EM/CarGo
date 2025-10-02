@@ -11,5 +11,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     @Query("select r from Reservation r left join fetch r.user")
     List<Reservation> findAllWithUser();
     List<Reservation> findAllByUser_Email(String email);
+    List<Reservation> findAllByVehicleId(Long id);
 
 }
