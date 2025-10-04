@@ -7,6 +7,10 @@ import com.project.CarGo.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -20,30 +24,24 @@ public class ReservationService {
         this.reservationRepository= reservationRepository;
     }
 
-    public double calculateTotalPrice(Vehicle vehicle, Reservation reservation) {
-        var start = reservation.getReservationStartDate();
-        var end   = reservation.getReservationEndDate();
+    public BigDecimal calculateTotalPrice(Vehicle vehicle, Reservation reservation) {
 
-        long days = ((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        Date start = reservation.getReservationStartDate();
+        Date end   = reservation.getReservationEndDate();
+        BigDecimal dailyRate = vehicle.getDailyRate();
+        LocalDate s = start.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate e = end.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        long days = ChronoUnit.DAYS.between(s, e);
         if (days <= 0) days = 1;
-
-        return vehicle.getDailyRate().multiply(BigDecimal.valueOf(days)).doubleValue();
+        return dailyRate.multiply(BigDecimal.valueOf(days)).setScale(2, RoundingMode.HALF_UP);
     }
 
     public boolean checkReservationOverlap(Reservation reservation) {
-        Date start = reservation.getReservationStartDate();
-        Date end   = reservation.getReservationEndDate();
-        Vehicle vehicle = vehicleRepository.getOne(reservation.getVehicleId());
-
-        List<Reservation> allReservationsById = reservationRepository.findAllByVehicleId(vehicle.getId());
-
-        for (Reservation r : allReservationsById) {
-            if((r.getReservationEndDate().after(start) && r.getReservationStartDate().after(end)) ||
-                r.getReservationEndDate().before(start) && r.getReservationStartDate().before(end))
-            {
-                return false;
-            }
-        }
-        return true;
+        return reservationRepository.countOverlaps(
+                reservation.getVehicleId(),
+                reservation.getReservationStartDate(),
+                reservation.getReservationEndDate(),
+                reservation.getId()
+        ) > 0;
     }
 }

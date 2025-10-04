@@ -9,6 +9,7 @@ import com.project.CarGo.repository.VehicleRepository;
 import com.project.CarGo.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -103,7 +106,7 @@ public class ReservationController {
             model.addAttribute("statuses", ReservationStatus.values());
             model.addAttribute("users", userRepository.findAll());
             model.addAttribute("vehicles", vehicleRepository.findAll());
-            if (reservation.getUser() == null) reservation.setUser(new User()); // keep th:field happy
+            if (reservation.getUser() == null) reservation.setUser(new User());
             return "reservation-form";
         }
 
@@ -114,16 +117,17 @@ public class ReservationController {
 
         reservation.setUser(user);
 
-        double total = reservationService.calculateTotalPrice(vehicle, reservation);
-        reservation.setTotalPrice(total);
+        BigDecimal total = reservationService.calculateTotalPrice(vehicle, reservation);
+        reservation.setTotalPrice(total.doubleValue());
         if (reservation.getStatus() == null) reservation.setStatus(ReservationStatus.PENDING);
 
-        if (reservationService.checkReservationOverlap(reservation)) {
-            ra.addFlashAttribute("error", "Reservation add failed. Reservation overlap.");
-            return "redirect:/admin/reservations";
+        boolean overlaps = reservationService.checkReservationOverlap(reservation);
+        if (overlaps) {
+            ra.addFlashAttribute("error", "Reservation save failed. Reservation overlap.");
+        } else {
+            reservationRepository.save(reservation);
+            ra.addFlashAttribute("success", "Reservation added successfully.");
         }
-        reservationRepository.save(reservation);
-        ra.addFlashAttribute("success", "Reservation added successfully.");
         return "redirect:/admin/reservations";
     }
 
@@ -164,14 +168,16 @@ public class ReservationController {
 
         reservation.setUser(user);
 
-        double total = reservationService.calculateTotalPrice(vehicle, reservation);
-        reservation.setTotalPrice(total);
-        if (reservationService.checkReservationOverlap(reservation)) {
+        BigDecimal total = reservationService.calculateTotalPrice(vehicle, reservation);
+        reservation.setTotalPrice(total.doubleValue());
+
+        boolean overlaps = reservationService.checkReservationOverlap(reservation);
+        if (overlaps) {
             ra.addFlashAttribute("error", "Reservation update failed. Reservation overlap.");
-            return "redirect:/admin/reservations";
+        } else {
+            reservationRepository.save(reservation);
+            ra.addFlashAttribute("success", "Reservation updated successfully.");
         }
-        reservationRepository.save(reservation);
-        ra.addFlashAttribute("success", "Reservation updated successfully.");
         return "redirect:/admin/reservations";
     }
 
@@ -182,6 +188,38 @@ public class ReservationController {
         List<Reservation> reservations = reservationRepository.findAllByUser_Email(email);
         model.addAttribute("reservations", reservations);
         return "user-reservations";
+    }
+
+    //user booking
+    @PostMapping("/reservations/quick-book")
+    public String quickBook(@RequestParam Long vehicleId,
+                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+                            RedirectAttributes ra) {
+        var vehicle = vehicleRepository.findById(vehicleId).orElseThrow();
+        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var user = userRepository.findByEmail(email).orElseThrow();
+        if (startDate == null || endDate == null) {
+            ra.addFlashAttribute("error", "Select start and end dates first.");
+            return "redirect:/vehicles";
+        }
+        long days = java.time.temporal.ChronoUnit.DAYS.between(
+                startDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate(),
+                endDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+        );
+        if (days <= 0) days = 1;
+        var total = vehicle.getDailyRate().multiply(java.math.BigDecimal.valueOf(days))
+                .setScale(2, java.math.RoundingMode.HALF_UP);
+        var r = new Reservation();
+        r.setUser(user);
+        r.setVehicleId(vehicle.getId());
+        r.setStatus(ReservationStatus.PENDING);
+        r.setReservationStartDate(startDate);
+        r.setReservationEndDate(endDate);
+        r.setTotalPrice(total.doubleValue());
+        r.setHoldExpiresAt(new Date(System.currentTimeMillis() + 15 * 60 * 1000L));
+        reservationRepository.save(r);
+        return "redirect:/checkout/" + r.getId();
     }
 
     //check if dates make sense

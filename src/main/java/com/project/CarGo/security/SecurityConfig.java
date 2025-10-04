@@ -16,7 +16,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/payments/**", "/stripe/webhook"))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/stripe/webhook").permitAll()
+                        .requestMatchers("/reservations/quick-book").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/", "/index", "/register", "/login",
                                 "/css/**", "/js/**", "/images/**", "/vehicles/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")

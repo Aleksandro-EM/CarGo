@@ -46,6 +46,9 @@
                 <td th:text="${reservation.totalPrice}">Total</td>
                 <td th:text="${#dates.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
                 <td th:text="${#dates.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${reservation.status}"></td>
+                <td th:text="${reservation.paymentStatus}"></td>
+                <td th:text="${reservation.stripePaymentId}"></td>
                 <td>
                     <a th:href="@{'/admin/reservations/edit/' + ${reservation.id}}" class="btn btn-sm btn-primary">Update</a>
 

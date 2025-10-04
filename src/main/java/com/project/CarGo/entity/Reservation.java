@@ -1,7 +1,6 @@
 package com.project.CarGo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,7 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 @Entity
-@Table(name = "reservations" /*, uniqueConstraints = {} <-- remove the email constraint */)
+@Table(name = "reservations")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,7 +23,6 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userId")
     private User user;
-
 
     @jakarta.validation.constraints.NotNull(message="Vehicle Cannot be null.")
     @jakarta.validation.constraints.Positive
@@ -44,7 +42,11 @@ public class Reservation {
     @NotNull(message="End date cannot be null.")
     private Date reservationEndDate;
 
+    @Column(name = "stripe_payment_id", length = 64)
     private String stripePaymentId;
+
+    @Column(name = "payment_status", length = 32)
+    private String paymentStatus;
 
     @DateTimeFormat
     private Date creationDate;
@@ -62,4 +64,9 @@ public class Reservation {
     void onUpdate() {
         updateDate = new Date();
     }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "hold_expires_at")
+    private Date holdExpiresAt;
+
 }
