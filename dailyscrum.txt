@@ -93,3 +93,45 @@
 - Stripe API
 - Heroku
 - S3
+
+2025/10/02 Kirththiga
+1. Done / not done since last scrum:
+- Working on user story: Project Setup S3
+2. To do until next Scrum:
+- Continue working on user story: Project Setup S3
+3. Need assistance / figure things out
+- Stripe API
+- Heroku
+- S3
+
+2025/10/02 Aleksandro
+1. Done / not done since last scrum:
+- Completed user stories: Customer can view their reservations, Users can access their reservation dashboard from header and Admins can access their admin dashboard from header.
+2. To do until next Scrum:
+- Work on user story - Integrate Car Availability and Reservations
+3. Need assistance / figure things out
+- Stripe API
+- Heroku
+- S3
+
+2025/10/03 Kirththiga
+1. Done / not done since last scrum:
+- Working on user story: Project Setup S3
+2. To do until next Scrum:
+- Continue working on user story: Project Setup S3
+- Looking into integrating S3 with the Thymeleaf forms
+3. Need assistance / figure things out
+- Stripe API
+- Heroku
+- S3
+
+2025/10/03 Aleksandro
+1. Done / not done since last scrum:
+- Working on user story - Integrate Car Availability and Reservations 
+2. To do until next Scrum:
+- Continue working on user story - Integrate Car Availability and Reservations
+- Looking into Stripe API
+3. Need assistance / figure things out
+- Stripe API
+- Heroku
+- S3
