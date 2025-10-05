@@ -101,6 +101,16 @@ public class ReservationController {
         }
         validateDates(reservation, bindingResult);
 
+        if (!bindingResult.hasErrors()) {
+            boolean overlaps = reservationService.checkReservationOverlap(reservation);
+            if (overlaps) {
+                bindingResult.rejectValue("reservationStartDate", "overlap",
+                        "These dates overlap an existing reservation for this vehicle.");
+                bindingResult.rejectValue("reservationEndDate", "overlap",
+                        "These dates overlap an existing reservation for this vehicle");
+            }
+        }
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("isEdit", false);
             model.addAttribute("statuses", ReservationStatus.values());
@@ -114,20 +124,14 @@ public class ReservationController {
                 .orElseThrow(() -> new IllegalArgumentException("Selected user not found."));
         var vehicle = vehicleRepository.findById(reservation.getVehicleId())
                 .orElseThrow(() -> new IllegalArgumentException("Selected vehicle not found."));
-
         reservation.setUser(user);
 
-        BigDecimal total = reservationService.calculateTotalPrice(vehicle, reservation);
+        var total = reservationService.calculateTotalPrice(vehicle, reservation);
         reservation.setTotalPrice(total.doubleValue());
         if (reservation.getStatus() == null) reservation.setStatus(ReservationStatus.PENDING);
 
-        boolean overlaps = reservationService.checkReservationOverlap(reservation);
-        if (overlaps) {
-            ra.addFlashAttribute("error", "Reservation save failed. Reservation overlap.");
-        } else {
-            reservationRepository.save(reservation);
-            ra.addFlashAttribute("success", "Reservation added successfully.");
-        }
+        reservationRepository.save(reservation);
+        ra.addFlashAttribute("success", "Reservation added successfully.");
         return "redirect:/admin/reservations";
     }
 
@@ -149,11 +153,22 @@ public class ReservationController {
         validateDates(reservation, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("isEdit", true); // <-- keep edit mode on error
+            model.addAttribute("isEdit", true);
             model.addAttribute("statuses", ReservationStatus.values());
             model.addAttribute("users", userRepository.findAll());
             model.addAttribute("vehicles", vehicleRepository.findAll());
             if (reservation.getUser() == null) reservation.setUser(new User());
+            return "reservation-form";
+        }
+
+        boolean overlaps = reservationService.checkReservationOverlap(reservation);
+        if (overlaps) {
+            bindingResult.rejectValue("reservationStartDate","overlap", "These dates overlap an existing reservation for this vehicle.");
+            bindingResult.rejectValue("reservationEndDate","overlap", "These dates overlap an existing reservation for this vehicle.");
+            model.addAttribute("isEdit", true);
+            model.addAttribute("statuses", ReservationStatus.values());
+            model.addAttribute("users", userRepository.findAll());
+            model.addAttribute("vehicles", vehicleRepository.findAll());
             return "reservation-form";
         }
 
@@ -165,19 +180,13 @@ public class ReservationController {
                 .orElseThrow(() -> new IllegalArgumentException("Selected user not found."));
         var vehicle = vehicleRepository.findById(reservation.getVehicleId())
                 .orElseThrow(() -> new IllegalArgumentException("Selected vehicle not found."));
-
         reservation.setUser(user);
 
-        BigDecimal total = reservationService.calculateTotalPrice(vehicle, reservation);
+        var total = reservationService.calculateTotalPrice(vehicle, reservation);
         reservation.setTotalPrice(total.doubleValue());
 
-        boolean overlaps = reservationService.checkReservationOverlap(reservation);
-        if (overlaps) {
-            ra.addFlashAttribute("error", "Reservation update failed. Reservation overlap.");
-        } else {
-            reservationRepository.save(reservation);
-            ra.addFlashAttribute("success", "Reservation updated successfully.");
-        }
+        reservationRepository.save(reservation);
+        ra.addFlashAttribute("success", "Reservation updated successfully.");
         return "redirect:/admin/reservations";
     }
 
@@ -199,17 +208,28 @@ public class ReservationController {
         var vehicle = vehicleRepository.findById(vehicleId).orElseThrow();
         var email = SecurityContextHolder.getContext().getAuthentication().getName();
         var user = userRepository.findByEmail(email).orElseThrow();
+
         if (startDate == null || endDate == null) {
             ra.addFlashAttribute("error", "Select start and end dates first.");
             return "redirect:/vehicles";
         }
+
+        boolean overlaps = reservationRepository.countOverlaps(vehicleId, startDate, endDate, null) > 0;
+        if (overlaps) {
+            ra.addFlashAttribute("error", "Those dates overlap an existing reservation for this vehicle.");
+            return "redirect:/vehicles";
+        }
+
         long days = java.time.temporal.ChronoUnit.DAYS.between(
                 startDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate(),
                 endDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
         );
         if (days <= 0) days = 1;
-        var total = vehicle.getDailyRate().multiply(java.math.BigDecimal.valueOf(days))
+
+        var total = vehicle.getDailyRate()
+                .multiply(java.math.BigDecimal.valueOf(days))
                 .setScale(2, java.math.RoundingMode.HALF_UP);
+
         var r = new Reservation();
         r.setUser(user);
         r.setVehicleId(vehicle.getId());
@@ -219,6 +239,7 @@ public class ReservationController {
         r.setTotalPrice(total.doubleValue());
         r.setHoldExpiresAt(new Date(System.currentTimeMillis() + 15 * 60 * 1000L));
         reservationRepository.save(r);
+
         return "redirect:/checkout/" + r.getId();
     }
 

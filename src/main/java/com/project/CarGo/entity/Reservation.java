@@ -34,10 +34,12 @@ public class Reservation {
 
     private double totalPrice;
 
+    @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message="Start date cannot be null.")
     private Date reservationStartDate;
 
+    @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message="End date cannot be null.")
     private Date reservationEndDate;

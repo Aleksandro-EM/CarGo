@@ -40,8 +40,6 @@
                 <td th:text="${reservation.vehicleId}">Vehicle</td>
                 <td th:text="${reservation.status.displayName}">Status</td>
                 <td th:text="${reservation.totalPrice}">Total</td>
-                <td th:text="${#dates.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
-                <td th:text="${#dates.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
                 <td>
                     <form th:action="@{'/user/reservations/delete/' + ${reservation.id}}"
                           method="post"
