@@ -31,6 +31,10 @@ public class CategoryController {
     public String listCategories(Model model) {
         List<Category> categories = categoryRepository.findAll();
         model.addAttribute("categories", categories);
+
+        List<String> imageUrlsS3 = s3Service.listFiles();
+        model.addAttribute("imageUrlsS3", imageUrlsS3);
+
         return "categories";
     }
 
@@ -46,7 +50,7 @@ public class CategoryController {
     @PostMapping("/category/add")
     public String saveCategory(@Valid @ModelAttribute("category") Category category,
                               BindingResult bindingResult, Model model,
-                              @RequestParam("imageFile") MultipartFile imageFile,
+                              @RequestParam(value="imageFile", required = false) MultipartFile imageFile,
                               RedirectAttributes redirectAttributes) {
 
         if(categoryRepository.existsByTypeAndSubtype(category.getType(), category.getSubtype())) {
@@ -82,6 +86,9 @@ public class CategoryController {
         model.addAttribute("category", category);
         model.addAttribute("types", CategoryType.values());
         model.addAttribute("subtypes", CategorySubtype.values());
+
+        List<String> imageUrlsS3 = s3Service.listFiles();
+        model.addAttribute("imageUrlsS3", imageUrlsS3);
         model.addAttribute("imageUrl", category.getImageUrl());
         return "category-form";
     }
@@ -90,13 +97,13 @@ public class CategoryController {
     public String updateCategory(@PathVariable Long id,
                                  @Valid @ModelAttribute("category") Category category,
                                  BindingResult bindingResult, Model model,
-                                 @RequestParam("imageFile") MultipartFile imageFile,
+                                 @RequestParam(value="imageFile", required = false) MultipartFile imageFile,
                                  RedirectAttributes redirectAttributes) {
 
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category ID: " + id));
 
-        if(categoryRepository.existsByTypeAndSubtype(category.getType(), category.getSubtype()) && (!Objects.equals(existingCategory.getId(), category.getId()))) {
+        if(categoryRepository.existsByTypeAndSubtype(category.getType(), category.getSubtype()) && (!Objects.equals(existingCategory.getId(), id))) {
             redirectAttributes.addFlashAttribute("error", "This type + subtype already exists.");
             return "redirect:/admin/category/edit/" + id;
         }
@@ -107,8 +114,15 @@ public class CategoryController {
             return "category-form";
         }
 
+        category.setImageUrl(existingCategory.getImageUrl());
+
         try {
             if (imageFile != null && !imageFile.isEmpty()) {
+
+                String fileName = getFileName(id);
+                if(!fileName.isEmpty()) {
+                    s3Service.deleteFile(fileName);
+                }
                 String imageUrl = s3Service.uploadFile(imageFile);
                 category.setImageUrl(imageUrl);
             }
@@ -125,8 +139,20 @@ public class CategoryController {
     @PostMapping("/category/delete/{id}")
     public String deleteCategory(@PathVariable("id") Long id, RedirectAttributes ra) {
 
+        String fileName = getFileName(id);
+        if(!fileName.isEmpty()) {
+            s3Service.deleteFile(fileName);
+        }
+
         categoryRepository.deleteById(id);
         ra.addFlashAttribute("success", "Category deleted successfully!");
         return "redirect:/admin/categories";
+    }
+
+    private String getFileName(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID: " + id));
+
+        return category.getImageUrl().substring(category.getImageUrl().lastIndexOf('/') + 1);
     }
 }

@@ -45,13 +45,29 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="imageFile">Image URL</label>
-                    <input id="imageFile" type="file" th:field="*{imageUrl}" name="imageFile" class="form-control">
-                    <div th:if="${#fields.hasErrors('imageUrl')}" class="alert alert-danger" th:errors="*{imageUrl}"></div>
+                    <label class="form-label" for="imageFile">Upload Image</label>
+                    <input id="imageFile" type="file" name="imageFile" class="form-control">
+                </div>
 
-                    <div th:if="${imageUrl}" class="mt-2">
-                        <img th:src="${imageUrl}" alt="Category Image" style="max-width: 200px;"/>
-                    </div>
+                <div class="mb-3" th:if="${imageUrlsS3 != null and !imageUrlsS3.isEmpty()}">
+                    <label class="form-label" for="imageUrl">Or Choose Existing Image</label>
+                    <select id="imageUrl" th:field="*{imageUrl}" class="form-select">
+                        <option value="">-- Select Existing Image --</option>
+                        <option th:each="url : ${imageUrlsS3}"
+                                th:value="${url}"
+                                th:text="${#strings.substring(url, url.lastIndexOf('/') + 1)}"
+                                th:selected="${url == category.imageUrl}">
+                        </option>
+                    </select>
+                </div>
+
+                <div th:if="${imageUrl != null}" class="mt-3 mb-3">
+                    <small class="form-text text-muted">
+                        Current file:
+                        <span th:text="${#strings.substring(imageUrl, imageUrl.lastIndexOf('/') + 1)}"></span>
+                    </small>
+                    <br>
+                    <img th:src="${imageUrl}" alt="Category Image" style="max-width: 200px;">
                 </div>
 
                 <button class="btn btn-primary w-100" type="submit"
