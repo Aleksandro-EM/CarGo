@@ -27,6 +27,8 @@ public class CategoryController {
     @Autowired
     private S3Service s3Service;
 
+    private static final String DEFAULT_IMAGE_URL = "https://cargo-file-storage.s3.amazonaws.com/default_image.png";
+
     @GetMapping("/categories")
     public String listCategories(Model model) {
         List<Category> categories = categoryRepository.findAll();
@@ -44,14 +46,15 @@ public class CategoryController {
         model.addAttribute("types", CategoryType.values());
         model.addAttribute("subtypes", CategorySubtype.values());
         model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("DEFAULT_IMAGE_URL", DEFAULT_IMAGE_URL);
         return "category-form";
     }
 
     @PostMapping("/category/add")
     public String saveCategory(@Valid @ModelAttribute("category") Category category,
-                              BindingResult bindingResult, Model model,
-                              @RequestParam(value="imageFile", required = false) MultipartFile imageFile,
-                              RedirectAttributes redirectAttributes) {
+                               BindingResult bindingResult, Model model,
+                               @RequestParam(value="imageFile", required = false) MultipartFile imageFile,
+                               RedirectAttributes redirectAttributes) {
 
         if(categoryRepository.existsByTypeAndSubtype(category.getType(), category.getSubtype())) {
             redirectAttributes.addFlashAttribute("error", "This type + subtype already exists.");
@@ -61,6 +64,7 @@ public class CategoryController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("types", CategoryType.values());
             model.addAttribute("subtypes", CategorySubtype.values());
+            model.addAttribute("DEFAULT_IMAGE_URL", DEFAULT_IMAGE_URL);
             return "category-form";
         }
 
@@ -68,6 +72,8 @@ public class CategoryController {
             if (imageFile != null && !imageFile.isEmpty()) {
                 String imageUrl = s3Service.uploadFile(imageFile);
                 category.setImageUrl(imageUrl);
+            } else if (category.getImageUrl() == null || category.getImageUrl().isEmpty()) {
+                category.setImageUrl(DEFAULT_IMAGE_URL);
             }
         } catch (IOException e) {
             redirectAttributes.addFlashAttribute("error", "Failed to upload image!");
@@ -89,7 +95,7 @@ public class CategoryController {
 
         List<String> imageUrlsS3 = s3Service.listFiles();
         model.addAttribute("imageUrlsS3", imageUrlsS3);
-        model.addAttribute("imageUrl", category.getImageUrl());
+        model.addAttribute("DEFAULT_IMAGE_URL", DEFAULT_IMAGE_URL);
         return "category-form";
     }
 
@@ -112,21 +118,23 @@ public class CategoryController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("types", CategoryType.values());
             model.addAttribute("subtypes", CategorySubtype.values());
+            model.addAttribute("DEFAULT_IMAGE_URL", DEFAULT_IMAGE_URL);
             return "category-form";
         }
 
+        existingCategory.setId(id);
         try {
             if (imageFile != null && !imageFile.isEmpty()) {
-
-                if(existingCategory.getImageUrl() != null && !existingCategory.getImageUrl().isEmpty()) {
-                    String oldFileName = getFileName(id);
+                if(existingCategory.getImageUrl() != null && !existingCategory.getImageUrl().equals(DEFAULT_IMAGE_URL)) {
+                    String oldFileName = getFileName(existingCategory.getImageUrl());
                     s3Service.deleteFile(oldFileName);
                 }
                 String newImageUrl = s3Service.uploadFile(imageFile);
                 existingCategory.setImageUrl(newImageUrl);
-            }
-            else if (category.getImageUrl() != null && !category.getImageUrl().isEmpty()) {
+            } else if (category.getImageUrl() != null && !category.getImageUrl().isEmpty()) {
                 existingCategory.setImageUrl(category.getImageUrl());
+            } else {
+                existingCategory.setImageUrl(DEFAULT_IMAGE_URL);
             }
 
             existingCategory.setType(category.getType());
@@ -143,9 +151,11 @@ public class CategoryController {
 
     @PostMapping("/category/delete/{id}")
     public String deleteCategory(@PathVariable("id") Long id, RedirectAttributes ra) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID: " + id));
 
-        String fileName = getFileName(id);
-        if(!fileName.isEmpty()) {
+        if(!category.getImageUrl().isEmpty() && !category.getImageUrl().equals(DEFAULT_IMAGE_URL)) {
+            String fileName = getFileName(category.getImageUrl());
             s3Service.deleteFile(fileName);
         }
 
@@ -154,10 +164,7 @@ public class CategoryController {
         return "redirect:/admin/categories";
     }
 
-    private String getFileName(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid category ID: " + id));
-
-        return category.getImageUrl().substring(category.getImageUrl().lastIndexOf('/') + 1);
+    private String getFileName(String imageUrl) {
+        return imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
     }
 }

@@ -29,7 +29,6 @@
                                 th:value="${type}"
                                 th:text="${type.displayName}"></option>
                     </select>
-                    <div th:if="${#fields.hasErrors('type')}" class="alert alert-danger" th:errors="*{type}"></div>
                 </div>
 
                 <div class="mb-3">
@@ -40,19 +39,20 @@
                                 th:value="${subtype}"
                                 th:text="${subtype.displayName}"></option>
                     </select>
-                    <div th:if="${#fields.hasErrors('subtype')}" class="alert alert-danger" th:errors="*{subtype}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label" for="imageFile">Upload New Image</label>
-                    <input id="imageFile" type="file" name="imageFile" class="form-control"
-                           onchange="previewFile(this)">
+                    <input id="imageFile" type="file" name="imageFile" class="form-control">
                 </div>
 
-                <div class="mb-3" th:if="${imageUrlsS3 != null and !imageUrlsS3.isEmpty()}">
+                <div class="mb-3">
                     <label class="form-label" for="imageUrl">Or Choose Existing Image</label>
-                    <select id="imageUrl" th:field="*{imageUrl}" class="form-select" onchange="selectExistingImage(this)">
-                        <option value="">-- Select Existing Image --</option>
+                    <select id="imageUrl" th:field="*{imageUrl}" class="form-select">
+                        <option th:value="${DEFAULT_IMAGE_URL}"
+                                th:selected="${category.imageUrl == null || category.imageUrl == DEFAULT_IMAGE_URL}">
+                            Use Default Image
+                        </option>
                         <option th:each="url : ${imageUrlsS3}"
                                 th:value="${url}"
                                 th:text="${#strings.substring(url, url.lastIndexOf('/') + 1)}"
@@ -61,10 +61,10 @@
                     </select>
                 </div>
 
-                <div class="mb-3" th:if="${category.imageUrl != null}">
+                <div class="mb-3">
                     <small class="form-text text-muted">Preview:</small>
                     <img id="imagePreview"
-                         th:src="${category.imageUrl}"
+                         th:src="${category.imageUrl != null ? category.imageUrl : DEFAULT_IMAGE_URL}"
                          alt="Category Image"
                          style="max-width: 200px; display: block; margin-top: 5px;">
                 </div>
