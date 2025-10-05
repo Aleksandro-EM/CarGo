@@ -17,7 +17,6 @@
             <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
             <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-            <!-- Shared Add/Edit Form -->
             <form th:action="@{${category.id} != null ? '/admin/category/edit/' + ${category.id} : '/admin/category/add'}"
                   th:object="${category}" method="POST" enctype="multipart/form-data">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
@@ -45,13 +44,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="imageFile">Upload Image</label>
-                    <input id="imageFile" type="file" name="imageFile" class="form-control">
+                    <label class="form-label" for="imageFile">Upload New Image</label>
+                    <input id="imageFile" type="file" name="imageFile" class="form-control"
+                           onchange="previewFile(this)">
                 </div>
 
                 <div class="mb-3" th:if="${imageUrlsS3 != null and !imageUrlsS3.isEmpty()}">
                     <label class="form-label" for="imageUrl">Or Choose Existing Image</label>
-                    <select id="imageUrl" th:field="*{imageUrl}" class="form-select">
+                    <select id="imageUrl" th:field="*{imageUrl}" class="form-select" onchange="selectExistingImage(this)">
                         <option value="">-- Select Existing Image --</option>
                         <option th:each="url : ${imageUrlsS3}"
                                 th:value="${url}"
@@ -61,13 +61,12 @@
                     </select>
                 </div>
 
-                <div th:if="${imageUrl != null}" class="mt-3 mb-3">
-                    <small class="form-text text-muted">
-                        Current file:
-                        <span th:text="${#strings.substring(imageUrl, imageUrl.lastIndexOf('/') + 1)}"></span>
-                    </small>
-                    <br>
-                    <img th:src="${imageUrl}" alt="Category Image" style="max-width: 200px;">
+                <div class="mb-3" th:if="${category.imageUrl != null}">
+                    <small class="form-text text-muted">Preview:</small>
+                    <img id="imagePreview"
+                         th:src="${category.imageUrl}"
+                         alt="Category Image"
+                         style="max-width: 200px; display: block; margin-top: 5px;">
                 </div>
 
                 <button class="btn btn-primary w-100" type="submit"

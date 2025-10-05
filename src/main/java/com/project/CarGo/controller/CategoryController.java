@@ -103,7 +103,8 @@ public class CategoryController {
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category ID: " + id));
 
-        if(categoryRepository.existsByTypeAndSubtype(category.getType(), category.getSubtype()) && (!Objects.equals(existingCategory.getId(), id))) {
+        if(categoryRepository.existsByTypeAndSubtype(category.getType(), category.getSubtype())
+                && !Objects.equals(existingCategory.getId(), id)) {
             redirectAttributes.addFlashAttribute("error", "This type + subtype already exists.");
             return "redirect:/admin/category/edit/" + id;
         }
@@ -114,25 +115,29 @@ public class CategoryController {
             return "category-form";
         }
 
-        category.setImageUrl(existingCategory.getImageUrl());
-
         try {
             if (imageFile != null && !imageFile.isEmpty()) {
 
-                String fileName = getFileName(id);
-                if(!fileName.isEmpty()) {
-                    s3Service.deleteFile(fileName);
+                if(existingCategory.getImageUrl() != null && !existingCategory.getImageUrl().isEmpty()) {
+                    String oldFileName = getFileName(id);
+                    s3Service.deleteFile(oldFileName);
                 }
-                String imageUrl = s3Service.uploadFile(imageFile);
-                category.setImageUrl(imageUrl);
+                String newImageUrl = s3Service.uploadFile(imageFile);
+                existingCategory.setImageUrl(newImageUrl);
             }
+            else if (category.getImageUrl() != null && !category.getImageUrl().isEmpty()) {
+                existingCategory.setImageUrl(category.getImageUrl());
+            }
+
+            existingCategory.setType(category.getType());
+            existingCategory.setSubtype(category.getSubtype());
+
+            categoryRepository.save(existingCategory);
+            redirectAttributes.addFlashAttribute("success", "Category updated successfully!");
         } catch (IOException e) {
             redirectAttributes.addFlashAttribute("error", "Failed to upload image!");
         }
 
-        category.setId(id);
-        categoryRepository.save(category);
-        redirectAttributes.addFlashAttribute("success", "Category updated successfully!");
         return "redirect:/admin/category/edit/" + id;
     }
 
