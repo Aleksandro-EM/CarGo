@@ -19,7 +19,7 @@
 
             <!-- Shared Add/Edit Form -->
             <form th:action="@{${category.id} != null ? '/admin/category/edit/' + ${category.id} : '/admin/category/add'}"
-                  th:object="${category}" method="POST">
+                  th:object="${category}" method="POST" enctype="multipart/form-data">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
                 <div class="mb-3">
@@ -45,9 +45,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label" for="imageUrl">Image URL</label>
-                    <input id="imageUrl" type="text" th:field="*{imageUrl}" class="form-control">
+                    <label class="form-label" for="imageFile">Image URL</label>
+                    <input id="imageFile" type="file" th:field="*{imageUrl}" name="imageFile" class="form-control">
                     <div th:if="${#fields.hasErrors('imageUrl')}" class="alert alert-danger" th:errors="*{imageUrl}"></div>
+
+                    <div th:if="${imageUrl}" class="mt-2">
+                        <img th:src="${imageUrl}" alt="Category Image" style="max-width: 200px;"/>
+                    </div>
                 </div>
 
                 <button class="btn btn-primary w-100" type="submit"
