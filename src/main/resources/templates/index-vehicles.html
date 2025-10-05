@@ -107,7 +107,13 @@
 
                                     <div class="mt-3">
                                         <a th:href="@{'/vehicle/details/' + ${vehicle.id}}" class="btn btn-primary btn-sm">View Details</a>
-                                        <a th:href="@{'/reservation/book/' + ${vehicle.id}}" class="btn btn-success btn-sm">Book Now</a>
+                                        <form th:action="@{/reservations/quick-book}" method="post" class="d-inline">
+                                            <input type="hidden" name="vehicleId" th:value="${vehicle.id}">
+                                            <input type="hidden" name="startDate" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}">
+                                            <input type="hidden" name="endDate" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                            <button type="submit" class="btn btn-success btn-sm">Book Now</button>
+                                        </form>
                                     </div>
 
                                 </div>

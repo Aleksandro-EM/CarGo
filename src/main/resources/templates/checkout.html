@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <title>Checkout</title>
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<section layout:fragment="content">
+    <div class="container my-5" style="max-width:600px;">
+        <h3 class="mb-3">Complete Payment</h3>
+        <div class="mb-2">
+            <strong>Reservation</strong>
+            <span th:text="${reservation.id}"></span>
+        </div>
+        <div class="mb-4">
+            <strong>Total</strong>
+            <span th:text="${reservation.totalPrice}"></span> CAD
+        </div>
+        <div id="payment-element"></div>
+        <button id="submit" class="btn btn-primary mt-3 w-100">Pay now</button>
+        <div id="message" class="mt-3 text-danger"></div>
+    </div>
+
+    <script th:inline="javascript">
+        const reservationId = /*[[${reservation.id}]]*/ 0;
+        const publishableKey = /*[[${publishableKey}]]*/ "";
+        let stripe;
+        async function init() {
+            const resp = await fetch("/api/payments/create-intent", {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: new URLSearchParams({reservationId})
+            });
+            const data = await resp.json();
+            stripe = Stripe(data.publishableKey);
+            const elements = stripe.elements({clientSecret: data.clientSecret});
+            const paymentElement = elements.create("payment");
+            paymentElement.mount("#payment-element");
+            document.getElementById("submit").addEventListener("click", async () => {
+                document.getElementById("submit").disabled = true;
+                const {error} = await stripe.confirmPayment({
+                    elements,
+                    confirmParams: { return_url: window.location.origin + "/user/reservations" }
+                });
+                if (error) {
+                    document.getElementById("message").textContent = error.message || "Payment failed";
+                    document.getElementById("submit").disabled = false;
+                }
+            });
+        }
+        init();
+    </script>
+</section>
+</html>

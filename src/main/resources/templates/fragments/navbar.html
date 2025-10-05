@@ -28,7 +28,7 @@
           </span>
             </div>
             <div class="nav-item mx-3" sec:authorize="hasRole('ROLE_ADMIN')">
-                <a class="btn btn-primary" th:href="@{/admin/reservations}">View Reservations</a>
+                <a class="btn btn-primary" th:href="@{/admin/dashboard}">Admin Dashboard</a>
             </div>
             <div class="nav-item mx-3" sec:authorize="hasRole('ROLE_USER')">
                 <a class="btn btn-primary" th:href="@{/user/reservations}">My Reservations</a>

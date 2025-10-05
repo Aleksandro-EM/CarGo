@@ -9,6 +9,7 @@ import com.project.CarGo.repository.VehicleRepository;
 import com.project.CarGo.service.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -98,12 +101,22 @@ public class ReservationController {
         }
         validateDates(reservation, bindingResult);
 
+        if (!bindingResult.hasErrors()) {
+            boolean overlaps = reservationService.checkReservationOverlap(reservation);
+            if (overlaps) {
+                bindingResult.rejectValue("reservationStartDate", "overlap",
+                        "These dates overlap an existing reservation for this vehicle.");
+                bindingResult.rejectValue("reservationEndDate", "overlap",
+                        "These dates overlap an existing reservation for this vehicle");
+            }
+        }
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("isEdit", false);
             model.addAttribute("statuses", ReservationStatus.values());
             model.addAttribute("users", userRepository.findAll());
             model.addAttribute("vehicles", vehicleRepository.findAll());
-            if (reservation.getUser() == null) reservation.setUser(new User()); // keep th:field happy
+            if (reservation.getUser() == null) reservation.setUser(new User());
             return "reservation-form";
         }
 
@@ -111,15 +124,14 @@ public class ReservationController {
                 .orElseThrow(() -> new IllegalArgumentException("Selected user not found."));
         var vehicle = vehicleRepository.findById(reservation.getVehicleId())
                 .orElseThrow(() -> new IllegalArgumentException("Selected vehicle not found."));
-
         reservation.setUser(user);
 
-        double total = reservationService.calculateTotalPrice(vehicle, reservation);
-        reservation.setTotalPrice(total);
+        var total = reservationService.calculateTotalPrice(vehicle, reservation);
+        reservation.setTotalPrice(total.doubleValue());
         if (reservation.getStatus() == null) reservation.setStatus(ReservationStatus.PENDING);
 
         reservationRepository.save(reservation);
-        ra.addFlashAttribute("success", "Reservation created successfully.");
+        ra.addFlashAttribute("success", "Reservation added successfully.");
         return "redirect:/admin/reservations";
     }
 
@@ -141,11 +153,22 @@ public class ReservationController {
         validateDates(reservation, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("isEdit", true); // <-- keep edit mode on error
+            model.addAttribute("isEdit", true);
             model.addAttribute("statuses", ReservationStatus.values());
             model.addAttribute("users", userRepository.findAll());
             model.addAttribute("vehicles", vehicleRepository.findAll());
             if (reservation.getUser() == null) reservation.setUser(new User());
+            return "reservation-form";
+        }
+
+        boolean overlaps = reservationService.checkReservationOverlap(reservation);
+        if (overlaps) {
+            bindingResult.rejectValue("reservationStartDate","overlap", "These dates overlap an existing reservation for this vehicle.");
+            bindingResult.rejectValue("reservationEndDate","overlap", "These dates overlap an existing reservation for this vehicle.");
+            model.addAttribute("isEdit", true);
+            model.addAttribute("statuses", ReservationStatus.values());
+            model.addAttribute("users", userRepository.findAll());
+            model.addAttribute("vehicles", vehicleRepository.findAll());
             return "reservation-form";
         }
 
@@ -157,12 +180,11 @@ public class ReservationController {
                 .orElseThrow(() -> new IllegalArgumentException("Selected user not found."));
         var vehicle = vehicleRepository.findById(reservation.getVehicleId())
                 .orElseThrow(() -> new IllegalArgumentException("Selected vehicle not found."));
-
         reservation.setUser(user);
 
-        double total = reservationService.calculateTotalPrice(vehicle, reservation);
-        reservation.setTotalPrice(total);
-        
+        var total = reservationService.calculateTotalPrice(vehicle, reservation);
+        reservation.setTotalPrice(total.doubleValue());
+
         reservationRepository.save(reservation);
         ra.addFlashAttribute("success", "Reservation updated successfully.");
         return "redirect:/admin/reservations";
@@ -172,9 +194,53 @@ public class ReservationController {
     public String showReservationsByUser(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        List<Reservation> reservations  = reservationRepository.findAllByUser_Email(email);
+        List<Reservation> reservations = reservationRepository.findAllByUser_Email(email);
         model.addAttribute("reservations", reservations);
         return "user-reservations";
+    }
+
+    //user booking
+    @PostMapping("/reservations/quick-book")
+    public String quickBook(@RequestParam Long vehicleId,
+                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+                            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+                            RedirectAttributes ra) {
+        var vehicle = vehicleRepository.findById(vehicleId).orElseThrow();
+        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var user = userRepository.findByEmail(email).orElseThrow();
+
+        if (startDate == null || endDate == null) {
+            ra.addFlashAttribute("error", "Select start and end dates first.");
+            return "redirect:/vehicles";
+        }
+
+        boolean overlaps = reservationRepository.countOverlaps(vehicleId, startDate, endDate, null) > 0;
+        if (overlaps) {
+            ra.addFlashAttribute("error", "Those dates overlap an existing reservation for this vehicle.");
+            return "redirect:/vehicles";
+        }
+
+        long days = java.time.temporal.ChronoUnit.DAYS.between(
+                startDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate(),
+                endDate.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+        );
+        if (days <= 0) days = 1;
+
+        var total = vehicle.getDailyRate()
+                .multiply(java.math.BigDecimal.valueOf(days))
+                .setScale(2, java.math.RoundingMode.HALF_UP);
+
+        var r = new Reservation();
+        r.setUser(user);
+        r.setVehicleId(vehicle.getId());
+        r.setStatus(ReservationStatus.PENDING);
+        r.setReservationStartDate(startDate);
+        r.setReservationEndDate(endDate);
+        r.setTotalPrice(total.doubleValue());
+        r.setHoldExpiresAt(new Date(System.currentTimeMillis() + 15 * 60 * 1000L));
+        reservationRepository.save(r);
+
+        return "redirect:/checkout/" + r.getId();
     }
 
     //check if dates make sense
