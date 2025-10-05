@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     boolean existsByTypeAndSubtype(CategoryType type, CategorySubtype subtype);
+    boolean existsByImageUrlAndIdNot(String imageUrl, Long id);
 }
