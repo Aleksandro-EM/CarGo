@@ -127,7 +127,7 @@ public class VehicleController {
 
     @GetMapping("/vehicles")
     public String showFormToDisplayAvailableVehicles(Model model) {
-        model.addAttribute("categories", categoryRepository.findAll());
+        model.addAttribute("categories", categoryRepository.findCategoriesWithVehicles());
         return "index-vehicles";
     }
 
@@ -158,7 +158,7 @@ public class VehicleController {
 
         List<Vehicle> vehicles = vehicleRepository.findAvailableVehiclesByDateAndCategory(startDate, endDate, categoryId);
 
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findCategoriesWithVehicles();
 
         long rentalDays = ((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
