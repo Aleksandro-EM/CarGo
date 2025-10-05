@@ -155,8 +155,12 @@ public class CategoryController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category ID: " + id));
 
         if(!category.getImageUrl().isEmpty() && !category.getImageUrl().equals(DEFAULT_IMAGE_URL)) {
-            String fileName = getFileName(category.getImageUrl());
-            s3Service.deleteFile(fileName);
+            boolean usedByOtherCategories = categoryRepository.existsByImageUrlAndIdNot(category.getImageUrl(), id);
+
+            if (!usedByOtherCategories) {
+                String fileName = getFileName(category.getImageUrl());
+                s3Service.deleteFile(fileName);
+            }
         }
 
         categoryRepository.deleteById(id);
