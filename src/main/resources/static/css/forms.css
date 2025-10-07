@@ -1,0 +1,71 @@
+body {
+    background: linear-gradient(to bottom right, #e9eef3, #f8f9fa);
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, #ffffff, #f1f6fb);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+}
+
+h2 {
+    color: #2c3e50;
+    font-weight: 600;
+    text-align: center;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.form-select,
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #cfd8e3;
+    background-color: #f9fbfd;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-select:focus,
+.form-control:focus {
+    border-color: #6ca0dc;
+    box-shadow: 0 0 0 0.15rem rgba(108, 160, 220, 0.25);
+}
+
+.btn-primary {
+    background-color: #4285f4;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #357ae8;
+}
+
+#imagePreview {
+    border-radius: 8px;
+    border: 1px solid #dce3eb;
+    margin-top: 8px;
+    max-width: 200px;
+    background-color: #f8fafc;
+}
+
+a.text-decoration-none {
+    color: #4285f4;
+    font-size: 0.9rem;
+}
+
+a.text-decoration-none:hover {
+    color: #2c6adf;
+}
+
+.alert {
+    border-radius: 8px;
+    font-size: 0.9rem;
+}

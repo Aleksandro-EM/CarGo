@@ -9,7 +9,7 @@
 
 <section layout:fragment="content">
     <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-        <div class="card shadow-lg p-4" style="width: 100%; max-width: 400px;">
+        <div class="card shadow-lg p-4 mt-4" style="width: 100%; max-width: 400px;">
 
             <h2 class="text-center mb-4"
                 th:text="${category.id} != null ? 'Edit Category' : 'Add Category'"></h2>
@@ -29,6 +29,8 @@
                                 th:value="${type}"
                                 th:text="${type.displayName}"></option>
                     </select>
+
+                    <div th:if="${#fields.hasErrors('type')}" class="alert alert-danger" th:errors="*{type}"></div>
                 </div>
 
                 <div class="mb-3">
@@ -39,11 +41,13 @@
                                 th:value="${subtype}"
                                 th:text="${subtype.displayName}"></option>
                     </select>
+                    <div th:if="${#fields.hasErrors('subtype')}" class="alert alert-danger" th:errors="*{subtype}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label" for="imageFile">Upload New Image</label>
                     <input id="imageFile" type="file" name="imageFile" class="form-control">
+                    <div th:if="${#fields.hasErrors('imageUrl')}" class="alert alert-danger" th:errors="*{imageUrl}"></div>
                 </div>
 
                 <div class="mb-3">
