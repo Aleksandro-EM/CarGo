@@ -22,7 +22,8 @@
                     <a class="btn btn-primary btn-lg" th:href="@{/vehicles}">
                         View Live Demo
                     </a>
-                    <a class="btn btn-outline-light btn-lg" th:href="@{/login}" th:if="${!#authentication.authenticated}">
+                    <a class="btn btn-outline-light btn-lg" th:href="@{/login}"
+                       th:if="${!#authentication.authenticated}">
                         Sign in
                     </a>
                     <a class="btn btn-outline-light btn-lg" th:href="@{/admin/reservations}"
@@ -32,7 +33,8 @@
                 </div>
 
                 <div class="d-flex gap-4 mt-4 text-muted">
-                    <div><span class="fw-semibold">Stripe-ready</span><br/><small>Payment Intents & webhooks</small></div>
+                    <div><span class="fw-semibold">Stripe-ready</span><br/><small>Payment Intents & webhooks</small>
+                    </div>
                     <div><span class="fw-semibold">AWS-ready</span><br/><small>RDS + S3 uploads</small></div>
                     <div><span class="fw-semibold">Secure</span><br/><small>Spring Security roles</small></div>
                 </div>
@@ -44,6 +46,7 @@
                          alt="Red sports car driving down a winding mountain road at golden hour"
                          style="object-fit: cover; width: 100%; height: 100%; filter: saturate(110%) contrast(105%);">
                 </div>
+            </div>
         </div>
     </header>
 
@@ -68,7 +71,8 @@
             <div class="col-md-6 col-lg-4">
                 <div class="glass p-4 h-100">
                     <h5 class="mb-2">Reservations & Availability</h5>
-                    <p class="text-muted mb-0">Date validation, overlap checks, and status lifecycle (HELD, PAID, etc.).</p>
+                    <p class="text-muted mb-0">Date validation, overlap checks, and status lifecycle (HELD, PAID,
+                        etc.).</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-4">
@@ -111,11 +115,13 @@
             <p class="text-muted">Screenshots, short clips, or GIFs — fully dynamic.</p>
         </div>
 
-        <div th:if="${mediaImages != null and !#lists.isEmpty(mediaImages)}" id="mediaCarousel" class="carousel slide glass">
+        <div th:if="${mediaImages != null and !#lists.isEmpty(mediaImages)}" id="mediaCarousel"
+             class="carousel slide glass">
             <div class="carousel-inner">
                 <div class="carousel-item" th:classappend="${iterStat.index == 0} ? ' active'"
                      th:each="img, iterStat : ${mediaImages}">
-                    <img class="d-block w-100" th:src="${img}" alt="CarGo screenshot" style="object-fit:cover; max-height:560px;">
+                    <img class="d-block w-100" th:src="${img}" alt="CarGo screenshot"
+                         style="object-fit:cover; max-height:560px;">
                 </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#mediaCarousel" data-bs-slide="prev">
@@ -134,12 +140,14 @@
             </div>
         </div>
 
-        <div class="row g-4" th:if="${(mediaImages == null or #lists.isEmpty(mediaImages)) and (mediaVideos == null or #lists.isEmpty(mediaVideos))}">
+        <div class="row g-4"
+             th:if="${(mediaImages == null or #lists.isEmpty(mediaImages)) and (mediaVideos == null or #lists.isEmpty(mediaVideos))}">
             <div class="col-md-6 col-lg-4" th:each="i : ${#numbers.sequence(1,3)}">
                 <div class="glass p-4 h-100 d-flex align-items-center justify-content-center text-center">
                     <div>
                         <div class="fw-semibold mb-2">Add your media</div>
-                        <small class="text-muted">Provide <code>mediaImages</code> or <code>mediaVideos</code> in the model.</small>
+                        <small class="text-muted">Provide <code>mediaImages</code> or <code>mediaVideos</code> in the
+                            model.</small>
                     </div>
                 </div>
             </div>
@@ -174,7 +182,7 @@
             <p class="text-muted mb-4">Explore the live demo and see how reservations and payments flow end-to-end.</p>
             <div class="d-flex flex-wrap justify-content-center gap-2">
                 <a class="btn btn-primary btn-lg" th:href="@{/vehicles}">Explore Demo</a>
-                <a class="btn btn-outline-light btn-lg " th:href="@{/contact}">Contact us</a>
+                <a class="btn btn-outline-dark btn-lg " th:href="@{/contact}">Contact us</a>
             </div>
         </div>
     </section>
@@ -186,7 +194,8 @@
                 <div class="accordion" id="faq">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="q1">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#a1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#a1">
                                 How do I add my own branding?
                             </button>
                         </h2>
@@ -198,7 +207,8 @@
                     </div>
                     <div class="accordion-item mt-2">
                         <h2 class="accordion-header" id="q2">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#a2">
                                 Does checkout support real payments?
                             </button>
                         </h2>
@@ -210,7 +220,8 @@
                     </div>
                     <div class="accordion-item mt-2">
                         <h2 class="accordion-header" id="q3">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#a3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#a3">
                                 Where are media files stored?
                             </button>
                         </h2>
@@ -223,11 +234,11 @@
                 </div>
             </div>
 
-            <!-- Contact card (optional) -->
             <div class="col-lg-6">
                 <div class="glass p-4 h-100">
                     <h5 class="mb-2">Need a custom integration?</h5>
-                    <p class="text-muted">We can adapt CarGo to your workflow (pricing rules, branches, custom fields).</p>
+                    <p class="text-muted">We can adapt CarGo to your workflow (pricing rules, branches, custom
+                        fields).</p>
                     <a class="btn btn-outline-light" th:href="@{/contact}">Get in touch</a>
                 </div>
             </div>
