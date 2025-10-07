@@ -144,11 +144,29 @@
 3. Need assistance / figure things out
 - Email notification for account validation
 
-
 2025/10/05 Aleksandro
 1. Done / not done since last scrum:
 - Completed user story - Integrate Car Availability and Reservations, Stripe API Integration and Project Setup Heroku
 2. To do until next Scrum:
 - Continue working on user story - Users & admins can refund reservations
+3. Need assistance / figure things out
+- Email notification for account validation
+
+2025/10/06 Kirththiga
+1. Done / not done since last scrum:
+- Working on user story: Front End Styling - Forms
+- Testing and reviewing Alex's user stories
+2. To do until next Scrum:
+- Continue working on user story: Front End Styling - Forms
+3. Need assistance / figure things out
+- Email notification for account validation
+
+2025/10/06 Aleksandro
+1. Done / not done since last scrum:
+- Completed user story - Admins can view all users
+- Testing and reviewing Kirththiga's user stories
+- Working on user story: Front End Styling - Index
+2. To do until next Scrum:
+- Continue working on user stories - Front End Styling - Index, and Users & admins can refund reservations
 3. Need assistance / figure things out
 - Email notification for account validation
