@@ -75,6 +75,7 @@ table.table {
     overflow: hidden;
     background: linear-gradient(to bottom, #ffffff, #f1f6fb);
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border-collapse: separate;
 }
 
 table.table th {

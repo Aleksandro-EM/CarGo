@@ -51,7 +51,7 @@
                 <td th:text="${vehicle.category.type} + ' - ' + ${vehicle.category.subtype}">Category</td>
                 <td th:text="${vehicle.dailyRate}">Rate</td>
                 <td th:text="${vehicle.status}">Status</td>
-                <td th:text="${#dates.format(vehicle.nextAvailableDate, 'yyyy-MM-dd HH:mm')}">Created</td>
+                <td th:text="${#dates.format(vehicle.nextAvailableDate, 'yyyy-MM-dd')}">Created</td>
                 <td th:text="${#dates.format(vehicle.creationDate, 'yyyy-MM-dd')}">Created</td>
                 <td th:text="${#dates.format(vehicle.updateDate, 'yyyy-MM-dd')}">Updated</td>
                 <td>
