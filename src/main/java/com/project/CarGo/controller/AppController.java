@@ -36,5 +36,4 @@ public class AppController {
         model.addAttribute("users", users);
         return "user-list";
     }
-
 }

@@ -21,7 +21,7 @@ public class SecurityConfig {
                         .requestMatchers("/stripe/webhook").permitAll()
                         .requestMatchers("/reservations/quick-book").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/", "/index", "/register", "/login",
-                                "/css/**", "/js/**", "/images/**", "/vehicles/**").permitAll()
+                                "/css/**", "/js/**", "/images/**", "/vehicles/**","/assets/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("USER","ADMIN")
                         .anyRequest().authenticated()
