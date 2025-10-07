@@ -1,0 +1,164 @@
+body {
+    background: linear-gradient(to bottom right, #e9eef3, #f8f9fa);
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+}
+
+h2 {
+    color: #2c3e50;
+    font-weight: 600;
+    text-align: center;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(to bottom, #ffffff, #f1f6fb);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+.form-select,
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #cfd8e3;
+    background-color: #f9fbfd;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-select:focus,
+.form-control:focus {
+    border-color: #6ca0dc;
+    box-shadow: 0 0 0 0.15rem rgba(108, 160, 220, 0.25);
+}
+
+.btn-primary {
+    background-color: #4285f4;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #357ae8;
+}
+
+#imagePreview {
+    border-radius: 8px;
+    border: 1px solid #dce3eb;
+    margin-top: 8px;
+    max-width: 200px;
+    background-color: #f8fafc;
+}
+
+a.text-decoration-none {
+    color: #4285f4;
+    font-size: 0.9rem;
+}
+
+a.text-decoration-none:hover {
+    color: #2c6adf;
+}
+
+.alert {
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+table.table {
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #ffffff, #f1f6fb);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+table.table th {
+    background-color: #f1f6fb;
+    color: #2c3e50;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+}
+
+table.table td,
+table.table th {
+    vertical-align: middle;
+    text-align: center;
+    padding: 0.75rem;
+    transition: background 0.3s, transform 0.3s;
+}
+
+table.table td:last-child,
+table.table th:last-child {
+    width: 220px;
+    white-space: nowrap;
+}
+
+table.table tbody tr:hover {
+    background-color: #e3f2fd;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+
+table.table img:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-sm {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.6rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.modal-content {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+.vehicles-available {
+    border: 1px solid #cfd8e3;
+    border-radius: 12px;
+    padding: 1.5rem;
+    background: linear-gradient(to bottom, #ffffff, #f9fbfd);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.vehicles-available:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.vehicles-result .card {
+    border-radius: 12px;
+    border: 1px solid #b0bccf;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.vehicles-result .card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    border-color: #8fa1c0;
+    cursor: pointer;
+}
