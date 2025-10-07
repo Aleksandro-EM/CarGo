@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <title>Reservations</title>
+</head>
+<section layout:fragment="content">
+    <div class="container mt-5">
+
+        <h2 class="text-center mb-4">Users</h2>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div th:if="${#lists.isEmpty(users)}">
+            <p>No Users yet!</p>
+        </div>
+
+        <table class="table table-bordered table-striped" id="table" th:if="${!#lists.isEmpty(users)}">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.firstName != null ? user.firstName : '—'}"></td>
+                <td th:text="${user.lastName != null ? user.lastName  : '—'}"></td>
+                <td th:text="${user.phoneNumber != null ? user.phoneNumber : '—'}"></td>
+                <td th:text="${user.email}">Email</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</html>

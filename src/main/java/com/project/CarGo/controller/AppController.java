@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @Controller
 public class AppController {
 
@@ -27,4 +29,12 @@ public class AppController {
         model.addAttribute("user", user);
         return "admin-dashboard";
     }
+
+    @GetMapping("/admin/users")
+    public String showUsers(Model model) {
+        List<User> users = userRepository.findAll();
+        model.addAttribute("users", users);
+        return "user-list";
+    }
+
 }
