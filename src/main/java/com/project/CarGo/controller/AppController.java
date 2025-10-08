@@ -2,6 +2,7 @@ package com.project.CarGo.controller;
 
 import com.project.CarGo.entity.User;
 import com.project.CarGo.repository.UserRepository;
+import com.project.CarGo.service.EmailService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -19,9 +20,11 @@ import java.util.List;
 public class AppController {
 
     UserRepository userRepository;
+    EmailService emailService;
 
-    public AppController(UserRepository userRepository) {
+    public AppController(UserRepository userRepository, EmailService emailService) {
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     @GetMapping("/admin/dashboard")
@@ -63,6 +66,7 @@ public class AppController {
 
         int updated = userRepository.updateRole(id, "ROLE_ADMIN");
         if (updated == 1) {
+            emailService.sendAdminEmail(user.getEmail());
             ra.addFlashAttribute("success", "Promoted " + user.getEmail() + " to admin.");
         } else {
             ra.addFlashAttribute("error", "Unable to promote user.");

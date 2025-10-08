@@ -62,7 +62,7 @@ public class AuthController {
 
         userRepository.save(user);
 
-        emailService.sendEmail(user.getEmail());
+        emailService.sendRegistrationEmail(user.getEmail());
         redirectAttributes.addFlashAttribute("message", "Registration Successful");
 
         return "redirect:/login?registered";
