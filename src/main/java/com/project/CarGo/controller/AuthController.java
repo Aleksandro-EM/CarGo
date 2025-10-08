@@ -2,6 +2,7 @@ package com.project.CarGo.controller;
 
 import com.project.CarGo.entity.User;
 import com.project.CarGo.repository.UserRepository;
+import com.project.CarGo.service.EmailService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,8 @@ public class AuthController {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -59,15 +62,14 @@ public class AuthController {
 
         userRepository.save(user);
 
+        emailService.sendEmail(user.getEmail());
         redirectAttributes.addFlashAttribute("message", "Registration Successful");
 
         return "redirect:/login?registered";
-
     }
 
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
     }
-
 }
