@@ -9,48 +9,92 @@
 </head>
 
 <section layout:fragment="content">
-    <div class="container my-5" style="max-width:600px;">
-        <h3 class="mb-3">Complete Payment</h3>
-        <div class="mb-2">
-            <strong>Reservation</strong>
-            <span th:text="${reservation.id}"></span>
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="card shadow-sm border rounded-4 p-4"
+             style="background-color: #fdfdfd; max-width: 600px; width: 100%;">
+
+            <h3 class="mb-4 text-center fw-bold text-dark">Complete Payment</h3>
+
+            <div class="mb-2 text-secondary">
+                <strong class="text-dark">Reservation:</strong>
+                <span th:text="${reservation.id}"></span>
+            </div>
+
+            <div class="mb-4 text-secondary">
+                <strong class="text-dark">Total:</strong>
+                <span th:text="${reservation.totalPrice}"></span> CAD
+            </div>
+
+            <div id="payment-element" class="mb-3"></div>
+
+            <button id="submit" class="btn btn-primary w-100">
+                <span class="btn-text">Pay now</span>
+                <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+            </button>
+
+            <div id="message" class="mt-3 text-danger" role="alert"></div>
         </div>
-        <div class="mb-4">
-            <strong>Total</strong>
-            <span th:text="${reservation.totalPrice}"></span> CAD
-        </div>
-        <div id="payment-element"></div>
-        <button id="submit" class="btn btn-primary mt-3 w-100">Pay now</button>
-        <div id="message" class="mt-3 text-danger"></div>
     </div>
 
     <script th:inline="javascript">
         const reservationId = /*[[${reservation.id}]]*/ 0;
-        const publishableKey = /*[[${publishableKey}]]*/ "";
-        let stripe;
+        let stripe, elements;
+
+        function setLoading(isLoading) {
+            const btn = document.getElementById("submit");
+            const spinner = btn.querySelector(".spinner-border");
+            const text = btn.querySelector(".btn-text");
+            btn.disabled = isLoading;
+            spinner.classList.toggle("d-none", !isLoading);
+            text.textContent = isLoading ? "Processing..." : "Pay now";
+        }
+
         async function init() {
-            const resp = await fetch("/api/payments/create-intent", {
-                method: "POST",
-                headers: {"Content-Type": "application/x-www-form-urlencoded"},
-                body: new URLSearchParams({reservationId})
-            });
+            setLoading(true);
+            let resp;
+            try {
+                resp = await fetch("/api/payments/create-intent", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: new URLSearchParams({ reservationId })
+                });
+            } catch {
+                document.getElementById("message").textContent = "Network error while starting payment.";
+                setLoading(false);
+                return;
+            }
+
+            if (!resp.ok) {
+                document.getElementById("message").textContent = "Unable to start payment.";
+                setLoading(false);
+                return;
+            }
+
             const data = await resp.json();
             stripe = Stripe(data.publishableKey);
-            const elements = stripe.elements({clientSecret: data.clientSecret});
+            elements = stripe.elements({ clientSecret: data.clientSecret });
+
             const paymentElement = elements.create("payment");
             paymentElement.mount("#payment-element");
-            document.getElementById("submit").addEventListener("click", async () => {
-                document.getElementById("submit").disabled = true;
-                const {error} = await stripe.confirmPayment({
-                    elements,
-                    confirmParams: { return_url: window.location.origin + "/user/reservations" }
-                });
-                if (error) {
-                    document.getElementById("message").textContent = error.message || "Payment failed";
-                    document.getElementById("submit").disabled = false;
+
+            setLoading(false);
+            document.getElementById("submit").addEventListener("click", onSubmit);
+        }
+
+        async function onSubmit() {
+            setLoading(true);
+            const { error } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    return_url: window.location.origin + "/payment/confirm?reservationId=" + reservationId
                 }
             });
+            if (error) {
+                document.getElementById("message").textContent = error.message || "Payment failed.";
+                setLoading(false);
+            }
         }
+
         init();
     </script>
 </section>

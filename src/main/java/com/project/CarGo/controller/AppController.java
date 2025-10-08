@@ -36,4 +36,14 @@ public class AppController {
         model.addAttribute("users", users);
         return "user-list";
     }
+
+    @GetMapping("/")
+    public String index(Model model) {
+        return "index";
+    }
+
+    @GetMapping("/contact")
+    public String contactInfo() {
+        return "contact";
+    }
 }

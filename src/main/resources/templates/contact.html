@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <title>Contact</title>
+</head>
+
+<section layout:fragment="content">
+    <div class="container py-5" style="max-width: 900px;">
+        <div class="text-center mb-4">
+            <h1 class="fw-bold">Contact</h1>
+            <p class="text-muted">Get in touch with the CarGo team</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="background-color:#f3f4f6;">
+                    <div class="card-body">
+                        <h5 class="fw-semibold mb-3">General inquiries</h5>
+                        <div class="mb-2">
+                            <div class="text-muted small">Email</div>
+                            <a href="mailto:hello@cargo.example" class="link-primary text-decoration-underline">hello@cargo.example</a>
+                        </div>
+                        <div class="mb-2">
+                            <div class="text-muted small">Phone</div>
+                            <a href="tel:+15145551234" class="link-primary text-decoration-underline">+1 (514) 555-1234</a>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Hours</div>
+                            <div>Mon–Fri, 9:00–17:00 ET</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="background-color:#f3f4f6;">
+                    <div class="card-body">
+                        <h5 class="fw-semibold mb-3">Support</h5>
+                        <div class="mb-2">
+                            <div class="text-muted small">Email</div>
+                            <a href="mailto:support@cargo.example" class="link-primary text-decoration-underline">support@cargo.example</a>
+                        </div>
+                        <div class="mb-2">
+                            <div class="text-muted small">Status</div>
+                            <a th:href="@{/status}" class="link-primary text-decoration-underline">System status</a>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Documentation</div>
+                            <a th:href="@{/docs}" class="link-primary text-decoration-underline">Getting started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-1">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="background-color:#f3f4f6;">
+                    <div class="card-body">
+                        <h5 class="fw-semibold mb-3">Office</h5>
+                        <div class="mb-2">123 Example Street, Suite 400</div>
+                        <div class="mb-3">Montréal, QC H2X 1A1, Canada</div>
+                        <a href="https://maps.google.com/?q=123 Example Street, Montréal, QC"
+                           target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">View on map</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100" style="background-color:#f3f4f6;">
+                    <div class="card-body">
+                        <h5 class="fw-semibold mb-3">Links</h5>
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="https://github.com/your-org/cargo" target="_blank" rel="noopener" class="link-primary text-decoration-underline">GitHub</a></li>
+                            <li class="mb-2"><a th:href="@{/privacy}" class="link-primary text-decoration-underline">Privacy</a></li>
+                            <li><a th:href="@{/terms}" class="link-primary text-decoration-underline">Terms</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</html>
