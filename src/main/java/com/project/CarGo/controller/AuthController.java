@@ -2,6 +2,8 @@ package com.project.CarGo.controller;
 
 import com.project.CarGo.entity.User;
 import com.project.CarGo.repository.UserRepository;
+import com.project.CarGo.service.EmailService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +24,8 @@ public class AuthController {
     private UserRepository userRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
@@ -58,6 +62,13 @@ public class AuthController {
         user.setUpdateDate(new Date());
 
         userRepository.save(user);
+
+        try {
+            emailService.sendEmail(user.getEmail());
+        } catch (MessagingException e) {
+            redirectAttributes.addFlashAttribute("message", "Failed to send activation email.");
+            return "redirect:/register";
+        }
 
         redirectAttributes.addFlashAttribute("message", "Registration Successful");
 
