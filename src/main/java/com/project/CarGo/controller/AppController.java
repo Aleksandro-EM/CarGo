@@ -56,18 +56,16 @@ public class AppController {
             ra.addFlashAttribute("error", "You can’t modify your own role here.");
             return "redirect:/admin/users";
         }
-
         if ("ROLE_ADMIN".equals(user.getRole())) {
             ra.addFlashAttribute("success", user.getEmail() + " is already an admin.");
             return "redirect:/admin/users";
         }
 
-        try {
-            user.setRole("ROLE_ADMIN");
-            userRepository.save(user); // <-- persist the change
+        int updated = userRepository.updateRole(id, "ROLE_ADMIN");
+        if (updated == 1) {
             ra.addFlashAttribute("success", "Promoted " + user.getEmail() + " to admin.");
-        } catch (Exception e) {
-            ra.addFlashAttribute("error", "Unable to promote user: " + e.getMessage());
+        } else {
+            ra.addFlashAttribute("error", "Unable to promote user.");
         }
         return "redirect:/admin/users";
     }
