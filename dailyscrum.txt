@@ -170,3 +170,19 @@
 - Continue working on user stories - Front End Styling - Index, and Users & admins can refund reservations
 3. Need assistance / figure things out
 - Email notification for account validation
+
+2025/10/07 Kirththiga
+1. Done / not done since last scrum:
+- Working on user stories: Front End Styling - Forms, and Users receive an email notification for account validation.
+2. To do until next Scrum:
+- Continue working on user stories: Front End Styling - Forms, and Users receive an email notification for account validation.
+3. Need assistance / figure things out
+- Email notification for account validation
+
+2025/10/07 Aleksandro
+1. Done / not done since last scrum:
+- Working on user stories: Front End Styling - Index, and Admins can create other admins
+2. To do until next Scrum:
+- Continue working on user stories - Front End Styling - Index, Admins can create other admins, and Users & admins can refund reservations
+3. Need assistance / figure things out
+- Stripe refunds
