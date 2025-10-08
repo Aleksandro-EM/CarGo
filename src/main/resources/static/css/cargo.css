@@ -38,16 +38,6 @@ h2 {
     box-shadow: 0 0 0 0.15rem rgba(108, 160, 220, 0.25);
 }
 
-.btn-primary {
-    background-color: #4285f4;
-    border: none;
-    font-weight: 500;
-}
-
-.btn-primary:hover {
-    background-color: #357ae8;
-}
-
 #imagePreview {
     border-radius: 8px;
     border: 1px solid #dce3eb;
@@ -100,17 +90,20 @@ table.table th:last-child {
     white-space: nowrap;
 }
 
-table.table tbody tr:hover {
-    background-color: #e3f2fd;
-    transform: translateY(-2px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    cursor: pointer;
-}
-
 table.table img:hover {
     transform: scale(1.05);
     transition: transform 0.3s;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    background-color: #4285f4;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #357ae8;
 }
 
 .btn-sm {
