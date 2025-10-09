@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+    <title>Payment Confirmation</title>
+</head>
+
+<section layout:fragment="content">
+    <div class="container py-5" style="max-width: 720px;">
+        <div th:if="${success}" class="alert alert-success d-flex align-items-center" role="alert">
+            <div>
+                <div class="fw-semibold">Payment confirmed</div>
+                <small th:if="${amount != null}">
+                    <span th:text="${amount}"></span> <span th:text="${currency}"></span>
+                </small>
+            </div>
+        </div>
+
+        <div th:if="${!success}" class="alert alert-warning" role="alert">
+            We could not confirm your payment yet. If you were charged, this may still be processing. Please refresh this page in a moment or check your email receipt.
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <h5 class="fw-semibold mb-3">Details</h5>
+
+                <div class="mb-2">
+                    <div class="text-muted small">Payment ID (Payment Intent)</div>
+                    <code th:text="${paymentIntentId}">pi_...</code>
+                </div>
+
+                <div class="mb-2" th:if="${chargeId != null}">
+                    <div class="text-muted small">Charge ID</div>
+                    <code th:text="${chargeId}">ch_...</code>
+                </div>
+
+                <div class="mb-2" th:if="${reservationId != null}">
+                    <div class="text-muted small">Reservation</div>
+                    <span th:text="${reservationId}"></span>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <a class="btn btn-primary" th:href="@{/user/reservations}">View my reservations</a>
+                    <a class="btn btn-outline-secondary" th:href="@{/}">Back to home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</html>

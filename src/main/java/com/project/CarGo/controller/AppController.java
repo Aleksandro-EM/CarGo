@@ -45,6 +45,15 @@ public class AppController {
         return "user-list";
     }
 
+    @GetMapping("/")
+    public String index(Model model) {
+        return "index";
+    }
+
+    @GetMapping("/contact")
+    public String contactInfo() {
+        return "contact";
+    }
 
     @PostMapping("/admin/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
