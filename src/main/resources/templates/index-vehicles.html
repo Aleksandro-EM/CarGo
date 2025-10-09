@@ -14,7 +14,7 @@
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
         <div class="mb-4">
-            <form th:action="@{/vehicles/available}" method="get" class="row g-3">
+            <form th:action="@{/vehicles/available}" method="get" class="row g-3 mt-4 vehicles-available">
 
                 <div class="col-md-3">
                     <label for="startDate" class="form-label">Start Date</label>
@@ -68,7 +68,7 @@
                 <p>No available vehicles for the selected dates and/or category.</p>
             </div>
 
-            <div class="row g-4" th:if="${!#lists.isEmpty(vehicles)}">
+            <div class="row g-4 vehicles-result" th:if="${!#lists.isEmpty(vehicles)}">
                 <div class="col-md-6" th:each="vehicle : ${vehicles}">
                     <div class="card shadow-sm mb-3">
                         <div class="row g-0">
