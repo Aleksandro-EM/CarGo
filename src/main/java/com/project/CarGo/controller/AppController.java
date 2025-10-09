@@ -53,6 +53,7 @@ public class AppController {
     @GetMapping("/contact")
     public String contactInfo() {
         return "contact";
+    }
 
     @PostMapping("/admin/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
