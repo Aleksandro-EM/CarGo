@@ -18,6 +18,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/payments/**", "/stripe/webhook"))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/contact").permitAll()
                         .requestMatchers("/stripe/webhook").permitAll()
                         .requestMatchers("/reservations/quick-book").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/", "/index", "/register", "/login",
