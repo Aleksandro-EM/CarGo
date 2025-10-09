@@ -186,3 +186,23 @@
 - Continue working on user stories - Front End Styling - Index, Admins can create other admins, and Users & admins can refund reservations
 3. Need assistance / figure things out
 - Stripe refunds
+
+
+2025/10/08 Kirththiga
+1. Done / not done since last scrum:
+- Completed user stories: Users receive an email notification for account registration, and Users receive an email notification when promoted to admin.
+- Working on user stories: Front End Styling - Forms
+- Testing and reviewing Alex's user stories
+2. To do until next Scrum:
+- Continue working on user stories: Front End Styling - Forms, and Users receive an email notification when changed to user.
+3. Need assistance / figure things out
+- None
+
+2025/10/08 Aleksandro
+1. Done / not done since last scrum:
+- Completed user stories: Front End Styling - Index, and Users see confirmation page after payment
+- Testing and reviewing Kirththiga's user stories
+2. To do until next Scrum:
+- Continue working on user stories - Admins can update admins to users
+3. Need assistance / figure things out
+- None
