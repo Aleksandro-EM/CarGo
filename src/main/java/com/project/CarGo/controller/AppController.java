@@ -82,4 +82,32 @@ public class AppController {
         }
         return "redirect:/admin/users";
     }
+
+    @PostMapping("/admin/demote/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public String demoteToUser(@PathVariable long id,
+                                 java.security.Principal principal,
+                                 RedirectAttributes ra) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + id));
+
+        if (principal != null && user.getEmail().equalsIgnoreCase(principal.getName())) {
+            ra.addFlashAttribute("error", "You can’t modify your own role here.");
+            return "redirect:/admin/users";
+        }
+        if ("ROLE_USER".equals(user.getRole())) {
+            ra.addFlashAttribute("success", user.getEmail() + " is already a user.");
+            return "redirect:/admin/users";
+        }
+
+        int updated = userRepository.updateRole(id, "ROLE_USER");
+        if (updated == 1) {
+            emailService.sendAdminEmail(user.getEmail());
+            ra.addFlashAttribute("success", "Demoted " + user.getEmail() + " to user.");
+        } else {
+            ra.addFlashAttribute("error", "Unable to promote user.");
+        }
+        return "redirect:/admin/users";
+    }
 }
