@@ -33,7 +33,7 @@ public class EmailService {
             body = "Your account has been promoted to admin!";
         }
         else {
-            body = "Your account has been changed to user!";
+            body = "Your account has been changed from admin to user!";
         }
 
         SimpleMailMessage message = new SimpleMailMessage();
