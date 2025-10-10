@@ -75,7 +75,7 @@ public class AppController {
 
         int updated = userRepository.updateRole(id, "ROLE_ADMIN");
         if (updated == 1) {
-            emailService.sendAdminEmail(user.getEmail());
+            emailService.sendAccountEmail(user.getEmail(), true);
             ra.addFlashAttribute("success", "Promoted " + user.getEmail() + " to admin.");
         } else {
             ra.addFlashAttribute("error", "Unable to promote user.");
@@ -103,7 +103,7 @@ public class AppController {
 
         int updated = userRepository.updateRole(id, "ROLE_USER");
         if (updated == 1) {
-            emailService.sendAdminEmail(user.getEmail());
+            emailService.sendAccountEmail(user.getEmail(), false);
             ra.addFlashAttribute("success", "Demoted " + user.getEmail() + " to user.");
         } else {
             ra.addFlashAttribute("error", "Unable to promote user.");
