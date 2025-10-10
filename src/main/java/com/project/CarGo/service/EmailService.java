@@ -25,9 +25,16 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public void sendAdminEmail(String recipient) {
+    public void sendAccountEmail(String recipient, boolean isAdmin) {
         String subject = "Information Related to CarGo Account";
-        String body = "Your account has been promoted to admin!";
+        String body = "";
+
+        if(isAdmin) {
+            body = "Your account has been promoted to admin!";
+        }
+        else {
+            body = "Your account has been changed from admin to user!";
+        }
 
         SimpleMailMessage message = new SimpleMailMessage();
 
