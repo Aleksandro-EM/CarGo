@@ -187,7 +187,6 @@
 3. Need assistance / figure things out
 - Stripe refunds
 
-
 2025/10/08 Kirththiga
 1. Done / not done since last scrum:
 - Completed user stories: Users receive an email notification for account registration, and Users receive an email notification when promoted to admin.
@@ -204,5 +203,23 @@
 - Testing and reviewing Kirththiga's user stories
 2. To do until next Scrum:
 - Continue working on user stories - Admins can update admins to users
+3. Need assistance / figure things out
+- None
+
+2025/10/09 Kirththiga
+1. Done / not done since last scrum:
+- Completed user stories: Front End Styling - Forms, and Users receive an email notification when updated from admin to user.
+- Testing and reviewing Alek's user stories
+2. To do until next Scrum:
+- Work on user story: Users receive an email notification when they book their vehicle.
+3. Need assistance / figure things out
+- None
+
+2025/10/09 Aleksandro
+1. Done / not done since last scrum:
+- Completed user story: Admins can change admins to users
+- Testing and reviewing Kirththiga's user stories
+2. To do until next Scrum:
+- Work on user story: Project Setup - Seed Data
 3. Need assistance / figure things out
 - None
