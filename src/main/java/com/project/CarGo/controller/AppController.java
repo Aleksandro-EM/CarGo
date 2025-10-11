@@ -3,6 +3,7 @@ package com.project.CarGo.controller;
 import com.project.CarGo.entity.User;
 import com.project.CarGo.repository.UserRepository;
 import com.project.CarGo.service.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -19,13 +20,11 @@ import java.util.List;
 @Controller
 public class AppController {
 
-    UserRepository userRepository;
-    EmailService emailService;
+    @Autowired
+    private UserRepository userRepository;
 
-    public AppController(UserRepository userRepository, EmailService emailService) {
-        this.userRepository = userRepository;
-        this.emailService = emailService;
-    }
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/admin/dashboard")
     public String adminDashboard(Model model, Authentication authentication) {
