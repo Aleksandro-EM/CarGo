@@ -6,9 +6,9 @@ import com.project.CarGo.entity.User;
 import com.project.CarGo.repository.ReservationRepository;
 import com.project.CarGo.repository.UserRepository;
 import com.project.CarGo.repository.VehicleRepository;
+import com.project.CarGo.service.EmailService;
 import com.project.CarGo.service.ReservationService;
 import jakarta.validation.Valid;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -28,13 +27,15 @@ public class ReservationController {
     private final ReservationService reservationService;
     private final VehicleRepository vehicleRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
 
-    public ReservationController(ReservationRepository reservationRepository, ReservationService reservationService, VehicleRepository vehicleRepository, UserRepository userRepository, SecurityProperties securityProperties) {
+    public ReservationController(ReservationRepository reservationRepository, ReservationService reservationService, VehicleRepository vehicleRepository, UserRepository userRepository, EmailService emailService) {
         this.reservationRepository = reservationRepository;
         this.reservationService = reservationService;
         this.vehicleRepository = vehicleRepository;
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     @GetMapping("admin/reservations")
@@ -73,7 +74,10 @@ public class ReservationController {
 
     @PostMapping("admin/reservations/delete/{id}")
     public String deleteReservation(@PathVariable("id") Long id, RedirectAttributes ra) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid reservation ID: " + id));
 
+        emailService.sendCancelReservationEmail(reservation.getUser().getEmail(), reservation);
         reservationRepository.deleteById(id);
         ra.addFlashAttribute("success", "Reservation deleted successfully!");
         return "redirect:/admin/reservations";
@@ -82,6 +86,10 @@ public class ReservationController {
     @PostMapping("user/reservations/delete/{id}")
     public String deleteUserReservation(@PathVariable("id") Long id, RedirectAttributes ra) {
 
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid reservation ID: " + id));
+
+        emailService.sendCancelReservationEmail(reservation.getUser().getEmail(), reservation);
         reservationRepository.deleteById(id);
         ra.addFlashAttribute("success", "Reservation deleted successfully!");
         return "redirect:/user/reservations";
@@ -131,6 +139,7 @@ public class ReservationController {
         if (reservation.getStatus() == null) reservation.setStatus(ReservationStatus.PENDING);
 
         reservationRepository.save(reservation);
+        emailService.sendReservationEmail(reservation.getUser().getEmail(), reservation, false);
         ra.addFlashAttribute("success", "Reservation added successfully.");
         return "redirect:/admin/reservations";
     }
@@ -186,6 +195,7 @@ public class ReservationController {
         reservation.setTotalPrice(total.doubleValue());
 
         reservationRepository.save(reservation);
+        emailService.sendReservationEmail(reservation.getUser().getEmail(), reservation, true);
         ra.addFlashAttribute("success", "Reservation updated successfully.");
         return "redirect:/admin/reservations";
     }
@@ -239,6 +249,8 @@ public class ReservationController {
         r.setTotalPrice(total.doubleValue());
         r.setHoldExpiresAt(new Date(System.currentTimeMillis() + 15 * 60 * 1000L));
         reservationRepository.save(r);
+
+        emailService.sendReservationEmail(r.getUser().getEmail(), r, false);
 
         return "redirect:/checkout/" + r.getId();
     }
