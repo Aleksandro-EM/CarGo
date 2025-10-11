@@ -43,7 +43,7 @@
                 <td th:text="${reservation.user != null ? reservation.user.phoneNumber : '—'}"></td>
                 <td th:text="${reservation.vehicleId}">Vehicle</td>
                 <td th:text="${reservation.status.displayName}">Status</td>
-                <td th:text="${reservation.totalPrice}">Total</td>
+                <td th:text="${#numbers.formatDecimal(reservation.totalPrice, 1, 2)}">Total</td>
                 <td th:text="${#dates.format(reservation.reservationStartDate, 'yyyy-MM-dd')}"></td>
                 <td th:text="${#dates.format(reservation.reservationEndDate, 'yyyy-MM-dd')}"></td>
                 <td>

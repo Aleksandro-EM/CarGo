@@ -250,8 +250,7 @@ public class ReservationController {
         r.setHoldExpiresAt(new Date(System.currentTimeMillis() + 15 * 60 * 1000L));
         reservationRepository.save(r);
 
-        emailService.sendReservationEmail(r.getUser().getEmail(), r, false);
-
+        emailService.sendReservationEmailWithDelay(r.getUser().getEmail(), r);
         return "redirect:/checkout/" + r.getId();
     }
 
