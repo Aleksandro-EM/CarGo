@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ReservationController {
@@ -172,8 +173,8 @@ public class ReservationController {
 
         boolean overlaps = reservationService.checkReservationOverlap(reservation);
         if (overlaps) {
-            bindingResult.rejectValue("reservationStartDate","overlap", "These dates overlap an existing reservation for this vehicle.");
-            bindingResult.rejectValue("reservationEndDate","overlap", "These dates overlap an existing reservation for this vehicle.");
+            bindingResult.rejectValue("reservationStartDate", "overlap", "These dates overlap an existing reservation for this vehicle.");
+            bindingResult.rejectValue("reservationEndDate", "overlap", "These dates overlap an existing reservation for this vehicle.");
             model.addAttribute("isEdit", true);
             model.addAttribute("statuses", ReservationStatus.values());
             model.addAttribute("users", userRepository.findAll());
@@ -247,7 +248,6 @@ public class ReservationController {
         r.setReservationStartDate(startDate);
         r.setReservationEndDate(endDate);
         r.setTotalPrice(total.doubleValue());
-        r.setHoldExpiresAt(new Date(System.currentTimeMillis() + 15 * 60 * 1000L));
         reservationRepository.save(r);
 
         emailService.sendReservationEmailWithDelay(r.getUser().getEmail(), r);
