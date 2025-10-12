@@ -7,7 +7,7 @@
     <title>Checkout</title>
     <script src="https://js.stripe.com/v3/"></script>
 </head>
-
+<div id="dbg" th:text="${reservation.id}"></div>
 <section layout:fragment="content">
     <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
         <div class="card shadow-sm border rounded-4 p-4"
@@ -38,7 +38,7 @@
 
     <script th:inline="javascript">
         const reservationId = /*[[${reservation.id}]]*/ 0;
-        let stripe, elements;
+        let stripe, elements, paymentElement, pollTimer;
 
         function setLoading(isLoading) {
             const btn = document.getElementById("submit");
@@ -49,21 +49,30 @@
             text.textContent = isLoading ? "Processing..." : "Pay now";
         }
 
+        function setPayEnabled(enabled, msg) {
+            const btn = document.getElementById("submit");
+            btn.disabled = !enabled;
+            const m = document.getElementById("message");
+            if (msg) m.textContent = msg; else m.textContent = "";
+        }
+
         async function init() {
             setLoading(true);
+
+            console.log("reservationId =", reservationId);
+
             let resp;
             try {
                 resp = await fetch("/api/payments/create-intent", {
                     method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: new URLSearchParams({ reservationId })
+                    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                    body: new URLSearchParams({reservationId})
                 });
             } catch {
                 document.getElementById("message").textContent = "Network error while starting payment.";
                 setLoading(false);
                 return;
             }
-
             if (!resp.ok) {
                 document.getElementById("message").textContent = "Unable to start payment.";
                 setLoading(false);
@@ -72,30 +81,77 @@
 
             const data = await resp.json();
             stripe = Stripe(data.publishableKey);
-            elements = stripe.elements({ clientSecret: data.clientSecret });
+            elements = stripe.elements({clientSecret: data.clientSecret});
 
-            const paymentElement = elements.create("payment");
+            paymentElement = elements.create("payment");
             paymentElement.mount("#payment-element");
+
+            // First hold check right away
+            await refreshHoldValidity();
 
             setLoading(false);
             document.getElementById("submit").addEventListener("click", onSubmit);
+
+            // Optional: poll every 10s to live-disable the button when hold expires
+            clearInterval(pollTimer);
+            pollTimer = setInterval(refreshHoldValidity, 10_000);
+        }
+
+        async function refreshHoldValidity() {
+            try {
+                const url = `/api/reservations/${reservationId}/hold`;
+                const res = await fetch(url, {method: "GET", cache: "no-store", credentials: "same-origin"});
+                if (!res.ok) throw new Error("Hold check failed: " + res.status);
+                const payload = await res.json();
+                console.log("hold check payload:", payload);
+
+                if (!payload.valid) {
+                    const msg = payload.status === "CANCELLED"
+                        ? "Your hold expired and was cancelled. Please restart checkout."
+                        : "Your hold is no longer valid. Please restart checkout.";
+                    setPayEnabled(false, msg);
+                    return false;
+                } else {
+                    setPayEnabled(true, "");
+                    return true;
+                }
+            } catch (e) {
+                console.error(e);
+                setPayEnabled(false, "Could not verify your reservation hold. Please refresh and try again.");
+                return false;
+            }
         }
 
         async function onSubmit() {
             setLoading(true);
-            const { error } = await stripe.confirmPayment({
+
+            // Hard guard before confirming payment
+            const stillValid = await refreshHoldValidity();
+            if (!stillValid) {
+                setLoading(false);
+                return;
+            }
+
+            if (!stripe || !elements) {
+                document.getElementById("message").textContent = "Payment not initialized yet. Please wait and try again.";
+                setLoading(false);
+                return;
+            }
+
+            const {error} = await stripe.confirmPayment({
                 elements,
                 confirmParams: {
                     return_url: window.location.origin + "/payment/confirm?reservationId=" + reservationId
                 }
             });
+
             if (error) {
                 document.getElementById("message").textContent = error.message || "Payment failed.";
                 setLoading(false);
             }
         }
 
-        init();
+        document.addEventListener("DOMContentLoaded", init);
     </script>
 </section>
 </html>
