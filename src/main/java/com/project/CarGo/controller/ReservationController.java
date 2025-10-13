@@ -54,7 +54,7 @@ public class ReservationController {
         }
         model.addAttribute("isEdit", false);
         model.addAttribute("statuses", ReservationStatus.values());
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("users", userRepository.findAllSortedByFirstName());
         model.addAttribute("vehicles", vehicleRepository.findAll());
         return "reservation-form";
     }
@@ -67,7 +67,7 @@ public class ReservationController {
         model.addAttribute("reservation", reservation);
         model.addAttribute("isEdit", true);
         model.addAttribute("statuses", ReservationStatus.values());
-        model.addAttribute("users", userRepository.findAll());
+        model.addAttribute("users", userRepository.findAllSortedByFirstName());
         model.addAttribute("vehicles", vehicleRepository.findAll());
         return "reservation-form";
     }
@@ -122,7 +122,7 @@ public class ReservationController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("isEdit", false);
             model.addAttribute("statuses", ReservationStatus.values());
-            model.addAttribute("users", userRepository.findAll());
+            model.addAttribute("users", userRepository.findAllSortedByFirstName());
             model.addAttribute("vehicles", vehicleRepository.findAll());
             if (reservation.getUser() == null) reservation.setUser(new User());
             return "reservation-form";
@@ -164,7 +164,7 @@ public class ReservationController {
         if (bindingResult.hasErrors()) {
             model.addAttribute("isEdit", true);
             model.addAttribute("statuses", ReservationStatus.values());
-            model.addAttribute("users", userRepository.findAll());
+            model.addAttribute("users", userRepository.findAllSortedByFirstName());
             model.addAttribute("vehicles", vehicleRepository.findAll());
             if (reservation.getUser() == null) reservation.setUser(new User());
             return "reservation-form";
@@ -176,7 +176,7 @@ public class ReservationController {
             bindingResult.rejectValue("reservationEndDate", "overlap", "These dates overlap an existing reservation for this vehicle.");
             model.addAttribute("isEdit", true);
             model.addAttribute("statuses", ReservationStatus.values());
-            model.addAttribute("users", userRepository.findAll());
+            model.addAttribute("users", userRepository.findAllSortedByFirstName());
             model.addAttribute("vehicles", vehicleRepository.findAll());
             return "reservation-form";
         }
