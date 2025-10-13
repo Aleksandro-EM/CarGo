@@ -14,7 +14,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     @Query("SELECT v FROM Vehicle v WHERE v.id NOT IN (" +
             "SELECT r.vehicleId FROM Reservation r " +
-            "WHERE r.reservationStartDate <= :endDate AND r.reservationEndDate >= :startDate)" +
+            "WHERE r.reservationStartDate <= :endDate AND r.reservationEndDate >= :startDate AND r.status <> 'CANCELLED')" +
             "AND (:categoryId IS NULL OR v.category.id = :categoryId)")
     List<Vehicle> findAvailableVehiclesByDateAndCategory(
             @Param("startDate") Date startDate,
