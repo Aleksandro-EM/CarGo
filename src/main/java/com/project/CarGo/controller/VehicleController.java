@@ -91,7 +91,7 @@ public class VehicleController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle ID: " + id));
         Vehicle v = vehicleRepository.findByNumberPlate(vehicle.getNumberPlate());
 
-        if(!Objects.equals(v.getId(), id)) {
+        if( v != null && !Objects.equals(v.getId(), id)) {
             redirectAttributes.addFlashAttribute("error", "This number plate already exists.");
             return "redirect:/admin/vehicle/edit/" + id;
         }
