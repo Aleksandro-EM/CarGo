@@ -50,7 +50,7 @@ public class EmailService {
 
     public void sendReservationEmail(String recipient, Reservation reservation, boolean isModified) {
 
-        Long id = reservation.getVehicleId();
+        Long id = reservation.getVehicle().getId();
         Vehicle vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle ID: " + id));
 
@@ -83,7 +83,7 @@ public class EmailService {
 
     public void sendCancelReservationEmail(String recipient, Reservation reservation) {
 
-        Long id = reservation.getVehicleId();
+        Long id = reservation.getVehicle().getId();
         Vehicle vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle ID: " + id));
 

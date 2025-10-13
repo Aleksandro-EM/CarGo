@@ -19,7 +19,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class ReservationController {
@@ -105,8 +104,8 @@ public class ReservationController {
         if (reservation.getUser() == null || reservation.getUser().getId() == null) {
             bindingResult.rejectValue("user", "user.required", "Please select a user.");
         }
-        if (reservation.getVehicleId() == null) {
-            bindingResult.rejectValue("vehicleId", "vehicle.required", "Please select a vehicle.");
+        if (reservation.getVehicle() == null) {
+            bindingResult.rejectValue("vehicle", "vehicle.required", "Please select a vehicle.");
         }
         validateDates(reservation, bindingResult);
 
@@ -131,7 +130,7 @@ public class ReservationController {
 
         var user = userRepository.findById(reservation.getUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Selected user not found."));
-        var vehicle = vehicleRepository.findById(reservation.getVehicleId())
+        var vehicle = vehicleRepository.findById(reservation.getVehicle().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Selected vehicle not found."));
         reservation.setUser(user);
 
@@ -157,8 +156,8 @@ public class ReservationController {
         if (reservation.getUser() == null || reservation.getUser().getId() == null) {
             bindingResult.rejectValue("user", "user.required", "Please select a user.");
         }
-        if (reservation.getVehicleId() == null) {
-            bindingResult.rejectValue("vehicleId", "vehicle.required", "Please select a vehicle.");
+        if (reservation.getVehicle() == null) {
+            bindingResult.rejectValue("vehicle", "vehicle.required", "Please select a vehicle.");
         }
         validateDates(reservation, bindingResult);
 
@@ -188,7 +187,7 @@ public class ReservationController {
 
         var user = userRepository.findById(reservation.getUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Selected user not found."));
-        var vehicle = vehicleRepository.findById(reservation.getVehicleId())
+        var vehicle = vehicleRepository.findById(reservation.getVehicle().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Selected vehicle not found."));
         reservation.setUser(user);
 
@@ -243,7 +242,7 @@ public class ReservationController {
 
         var r = new Reservation();
         r.setUser(user);
-        r.setVehicleId(vehicle.getId());
+        r.setVehicle(vehicle);
         r.setStatus(ReservationStatus.PENDING);
         r.setReservationStartDate(startDate);
         r.setReservationEndDate(endDate);

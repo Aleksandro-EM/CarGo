@@ -43,7 +43,7 @@ public class StripeService {
                         PaymentIntentCreateParams.AutomaticPaymentMethods.builder().setEnabled(true).build()
                 )
                 .putMetadata("reservationId", String.valueOf(r.getId()))
-                .putMetadata("vehicleId", r.getVehicleId() == null ? "" : String.valueOf(r.getVehicleId()))
+                .putMetadata("vehicleId", r.getVehicle().getId() == null ? "" : String.valueOf(r.getVehicle().getId()))
                 .putMetadata("userEmail", r.getUser() == null ? "" : Objects.toString(r.getUser().getEmail(), ""))
                 .build();
 

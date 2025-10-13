@@ -38,7 +38,7 @@ public class ReservationService {
 
     public boolean checkReservationOverlap(Reservation reservation) {
         return reservationRepository.countOverlaps(
-                reservation.getVehicleId(),
+                reservation.getVehicle().getId(),
                 reservation.getReservationStartDate(),
                 reservation.getReservationEndDate(),
                 reservation.getId()
