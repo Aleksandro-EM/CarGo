@@ -76,9 +76,6 @@ public class Vehicle {
     @DateTimeFormat
     private Date updateDate;
 
-    @OneToMany(mappedBy = "vehicle")
-    private List<Reservation> reservations;
-
     @PrePersist
     protected void onCreate() {
         nextAvailableDate = new Date();
