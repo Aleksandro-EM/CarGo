@@ -29,8 +29,7 @@ public class StripeService {
         Stripe.apiKey = secretKey;
 
         r.setStatus(ReservationStatus.PENDING);
-        //this is weird, I can't change the RDS to work off of EST, so I just hard coded the 4-hour offset from UTC
-        r.setHoldExpiresAt(new Date(System.currentTimeMillis() + 4 * 60 * 60 * 1000L + 5 * 60 * 1000L)); //5min
+        r.setHoldExpiresAt(new Date(System.currentTimeMillis() + 5 * 60 * 1000L)); //5min
         reservationRepository.save(r);
 
         BigDecimal amount = BigDecimal.valueOf(r.getTotalPrice())
