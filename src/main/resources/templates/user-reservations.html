@@ -56,7 +56,8 @@
                         <button type="button"
                                 class="btn btn-sm btn-danger"
                                 data-bs-toggle="modal"
-                                th:attr="data-bs-target='#deleteModal-' + ${reservation.id}">
+                                th:attr="data-bs-target='#deleteModal-' + ${reservation.id}"
+                                th:disabled="${reservation.status.displayName == 'CANCELLED'}">
                             Cancel Reservation
                         </button>
                     </form>
