@@ -24,9 +24,9 @@ public class Reservation {
     @JoinColumn(name = "userId")
     private User user;
 
-    @jakarta.validation.constraints.NotNull(message="Vehicle Cannot be null.")
-    @jakarta.validation.constraints.Positive
-    private Long vehicleId;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "vehicle_id")
+    private Vehicle vehicle;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Status is required.")

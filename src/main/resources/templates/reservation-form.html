@@ -34,14 +34,14 @@
                     <div th:if="${#fields.hasErrors('user')}" class="alert alert-danger" th:errors="*{user}"></div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label" for="vehicleId">Vehicle</label>
-                    <select id="vehicleId" class="form-select" th:field="*{vehicleId}">
+                    <label class="form-label" for="vehicle">Vehicle</label>
+                    <select id="vehicle" class="form-select" th:field="*{vehicle}">
                         <option th:value="${null}">-- Select Vehicle --</option>
                         <option th:each="v : ${vehicles}" th:value="${v.id}"
                                 th:text="${v.year} + ' ' + ${v.make} + ' ' + ${v.model} + ' — $' + ${v.dailyRate} + '/day'">
                         </option>
                     </select>
-                    <div th:if="${#fields.hasErrors('vehicleId')}" class="alert alert-danger" th:errors="*{vehicleId}"></div>
+                    <div th:if="${#fields.hasErrors('vehicle')}" class="alert alert-danger" th:errors="*{vehicle}"></div>
                 </div>
 
                 <div class="mb-3">

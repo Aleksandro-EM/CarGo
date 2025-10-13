@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "vehicles")
@@ -74,6 +75,9 @@ public class Vehicle {
 
     @DateTimeFormat
     private Date updateDate;
+
+    @OneToMany(mappedBy = "vehicle")
+    private List<Reservation> reservations;
 
     @PrePersist
     protected void onCreate() {
