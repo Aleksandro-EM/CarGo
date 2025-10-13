@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+  <title>Bad Request</title>
+</head>
+<section layout:fragment="content">
+  <div class="container mt-5">
+    <h2 class="text-danger mb-4 display-3">400</h2>
+    <h3 class="text-secondary mb-4 text-center">Bad Request</h3>
+    <p class="text-center">The request cannot be processed.</p>
+    <div class="mb-3 text-center">
+      <a th:href="@{/}" class="btn btn-primary mt-3">Go Home</a>
+    </div>
+  </div>
+</section>
+</html>
