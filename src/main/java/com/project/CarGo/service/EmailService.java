@@ -34,35 +34,18 @@ public class EmailService {
         String subject = "CarGo Account Registration";
         String body = "Thank you for registering with CarGo!";
 
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setTo(recipient);
-        message.setSubject(subject);
-        message.setText(body);
-        message.setFrom(FROM_EMAIL);
-
-        mailSender.send(message);
+        sendEmail(recipient, subject, body);
     }
 
     public void sendAccountEmail(String recipient, boolean isAdmin) {
         String subject = "Information Related to CarGo Account";
-        String body = "";
+        String body = "Your account has been changed from admin to user!";
 
         if(isAdmin) {
             body = "Your account has been promoted to admin!";
         }
-        else {
-            body = "Your account has been changed from admin to user!";
-        }
 
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setTo(recipient);
-        message.setSubject(subject);
-        message.setText(body);
-        message.setFrom(FROM_EMAIL);
-
-        mailSender.send(message);
+        sendEmail(recipient, subject, body);
     }
 
     public void sendReservationEmail(String recipient, Reservation reservation, boolean isModified) {
@@ -87,14 +70,7 @@ public class EmailService {
                 + "\nVehicle: " + vehicle.getModel() + " " + vehicle.getMake()
                 + "\n\nReservation Status: " + reservation.getStatus() + "\nTotal Price: " + String.format("%.2f", reservation.getTotalPrice());
 
-        SimpleMailMessage message = new SimpleMailMessage();
-
-        message.setTo(recipient);
-        message.setSubject(subject);
-        message.setText(body);
-        message.setFrom(FROM_EMAIL);
-
-        mailSender.send(message);
+        sendEmail(recipient, subject, body);
     }
 
     public void sendReservationEmailWithDelay(String recipient, Reservation reservation) {
@@ -116,6 +92,10 @@ public class EmailService {
                 + "Start Date: " + reservation.getReservationStartDate() + "\nEnd Date: " + reservation.getReservationEndDate()
                 + "\nVehicle: " + vehicle.getModel() + " " + vehicle.getMake();
 
+        sendEmail(recipient, subject, body);
+    }
+
+    private void sendEmail(String recipient, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
 
         message.setTo(recipient);
