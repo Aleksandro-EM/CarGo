@@ -15,7 +15,8 @@
         <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
         <div class="mb-3">
-            <a th:href="@{/admin/reservations/add}" class="btn btn-success">Create new Reservation</a>
+            <a th:href="@{/admin/reservations/add}" class="btn btn-success me-3">Create new Reservation</a>
+            <a th:href="@{/vehicles}" class="btn btn-success">Vehicle Availability</a>
         </div>
 
         <div th:if="${#lists.isEmpty(reservations)}">
