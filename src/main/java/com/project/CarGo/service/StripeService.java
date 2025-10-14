@@ -29,7 +29,7 @@ public class StripeService {
         Stripe.apiKey = secretKey;
 
         r.setStatus(ReservationStatus.PENDING);
-        r.setHoldExpiresAt(new Date(System.currentTimeMillis() + 5 * 60 * 1000L)); //5min
+        r.setHoldExpiresAt(new Date(System.currentTimeMillis() + 2 * 60 * 1000L)); // 2 min
         reservationRepository.save(r);
 
         BigDecimal amount = BigDecimal.valueOf(r.getTotalPrice())
