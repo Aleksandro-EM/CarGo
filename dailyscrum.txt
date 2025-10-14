@@ -242,3 +242,31 @@
 - Testing
 3. Need assistance / figure things out
 - None
+
+2025/10/13 Kirththiga
+1. Done / not done since last scrum:
+- Completed user stories: 
+	-Create Error Pages
+	-Refactor Reservation Entity and Forms
+	-Project Setup - Seed Data
+	-Users/Admins can navigate to available vehicles from reservations
+	-Fix vehicle availability due to payment holds
+2. To do until next Scrum:
+- Testing
+- Prepare presentation
+3. Need assistance / figure things out
+- None
+
+2025/10/13 Aleksandro
+1. Done / not done since last scrum:
+- Completed user stories: 
+	-Reservation-first Stripe flow
+	-Project Setup - Seed Data
+- Testing
+- Prepared for Demo
+2. To do until next Scrum:
+- Testing
+- Prepare presentation
+- Work on user stories: Users and Admin can see the cargo logo in the header, and Modify Readme to account for modifications
+3. Need assistance / figure things out
+- None
