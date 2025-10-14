@@ -24,7 +24,7 @@ CarGo is a Spring Boot web application that allows customers to browse, reserve,
 ## Live Demo
 **Heroku Deployment:**  
 [CarGo Application](https://cargo-prod-b8d4c89a3453.herokuapp.com/)  
-*(Replace with your live Heroku URL if different.)*
+
 
 ---
 
