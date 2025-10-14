@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{base}">
+<head>
+  <title>Gateway Timeout</title>
+</head>
+<section layout:fragment="content">
+  <div class="container mt-5">
+    <h2 class="text-danger mb-4 display-3">504</h2>
+    <h3 class="text-secondary mb-4 text-center">Gateway Timeout</h3>
+    <p class="text-center">The server did not receive a response.</p>
+    <div class="mb-3 text-center">
+      <a th:href="@{/}" class="btn btn-primary mt-3">Go Home</a>
+    </div>
+  </div>
+</section>
+</html>

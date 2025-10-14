@@ -6,12 +6,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum CategoryType {
-    SUV("SUV"),
     CAR("Car"),
-    VAN("Van"),
-    PICKUP("Pickup"),
     ELECTRIC("Electric"),
-    HYBRID("Hybrid");
+    HYBRID("Hybrid"),
+    PICKUP("Pickup"),
+    SUV("SUV"),
+    VAN("Van");
 
     private final String displayName;
 }

@@ -6,11 +6,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ReservationStatus {
-    PENDING("PENDING"),
-    PAID("PAID"),
-    IN_PROGRESS("IN PROGRESS"),
+    CANCELLED("CANCELLED"),
     COMPLETED("COMPLETED"),
-    CANCELLED("CANCELLED");
+    IN_PROGRESS("IN PROGRESS"),
+    PAID("PAID"),
+    PENDING("PENDING");
 
     private final String displayName;
 }

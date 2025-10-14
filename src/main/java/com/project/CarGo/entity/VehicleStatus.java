@@ -7,8 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum VehicleStatus {
     AVAILABLE,
-    RENTED,
     MAINTENANCE,
+    RENTED,
     RESERVED,
     UNAVAILABLE;
 }

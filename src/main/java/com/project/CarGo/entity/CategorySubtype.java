@@ -8,9 +8,9 @@ import lombok.Getter;
 public enum CategorySubtype {
     COMPACT("Compact"),
     ECONOMY("Economy"),
-    LUXURY("Luxury"),
-    INTERMEDIATE("Intermediate"),
     FULL_SIZE("Full Size"),
+    INTERMEDIATE("Intermediate"),
+    LUXURY("Luxury"),
     MID_SIZE("Mid size"),
     PREMIUM("Premium"),
     STANDARD("Standard");
