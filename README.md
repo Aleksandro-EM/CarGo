@@ -66,6 +66,7 @@ CarGo follows a Model–View–Controller (MVC) architecture:
 ## Integrations
 - **Stripe API** – Handles secure payment processing (PaymentIntent, confirmation, and webhooks).
 - **Heroku + RDS** – Cloud-hosted deployment with MySQL backend.
+- **SendGrid** - Email notifications.
 
 ---
 
@@ -184,6 +185,15 @@ heroku login
 # Deploy
 git push heroku main
 ```
+
+## Email Notifications
+CarGo uses **SendGrid** to send automated email notifications to users after successful payments and confirmed reservations.
+
+- Triggered by Stripe’s `payment_intent.succeeded` webhook event.
+- Emails include reservation details, payment confirmation, and contact information.
+- Configured with environment variables on Heroku:
+    - `SENDGRID_API_KEY`
+    - `MAIL_FROM` (application sender address)
 
 ## Project Status
 The project is **currently under active development** — core features are functional, with payment and cloud integration coming next.
