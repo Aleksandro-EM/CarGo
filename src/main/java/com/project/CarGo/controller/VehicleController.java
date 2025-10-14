@@ -151,9 +151,25 @@ public class VehicleController {
             return "redirect:/vehicles";
         }
 
-        if(endDate.before(startDate)) {
-            redirectAttributes.addFlashAttribute("error", "End date cannot be before start date.");
+        Date today = new Date();
+        if(startDate.before(today) && endDate.before(today)) {
+            redirectAttributes.addFlashAttribute("error", "Start and end dates cannot be in the past.");
             return "redirect:/vehicles";
+        }
+        else if(startDate.before(today)) {
+            redirectAttributes.addFlashAttribute("error", "Start date cannot be in the past.");
+            return "redirect:/vehicles";
+        }
+
+        if(endDate.before(startDate)) {
+            if(endDate.before(today)) {
+                redirectAttributes.addFlashAttribute("error", "End date cannot be before start date and a date in the past.");
+                return "redirect:/vehicles";
+            }
+            else {
+                redirectAttributes.addFlashAttribute("error", "End date cannot be before start date.");
+                return "redirect:/vehicles";
+            }
         }
 
         List<Vehicle> vehicles = vehicleRepository.findAvailableVehiclesByDateAndCategory(startDate, endDate, categoryId);
