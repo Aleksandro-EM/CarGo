@@ -1,8 +1,5 @@
 # CarGo - Car Rental Application
 
-# CarGo
-Car Rental Web Application
-
 **Authors:**
 - Kirththiga Murugupillai
 - Aleksandro Echavarria-Mercier
@@ -10,86 +7,195 @@ Car Rental Web Application
 ---
 
 ## Project Description
-CarGo is a **Spring Boot web application** for browsing, booking, and reserving rental cars.
+CarGo is a Spring Boot web application that allows customers to browse, reserve, and pay for rental cars online.
 
-- Customers can **register/login** and search for vehicles by category (SUV, Luxury, Economy, etc.).
-- Reservations are validated against car availability, with pricing based on rental duration.
-- A secure **Spring Security** authentication system ensures role-based access control:
-    - **CUSTOMER** → browse cars, make reservations, upload documents.
-    - **ADMIN** → manage cars, reservations, and perform CRUD operations on users.
-- File uploads (e.g., driver’s license photos/scans) are supported.
-- Styled with **Bootstrap 5** for a professional UI, with real-time feedback on actions like successful bookings or login errors.
-- The final version will be hosted on **AWS** (EC2, RDS, S3).
+- Customers can register or log in, view vehicles by category (Economy, SUV, Luxury, etc.), and make reservations.
+- Reservations are validated against car availability to prevent overlaps.
+- A secure Stripe payment system enables credit card payments for confirmed bookings.
+- Role-based access with Spring Security ensures data protection:
+    - CUSTOMER → browse cars, make reservations, and complete payments
+    - ADMIN → manage vehicles, users, and reservations via CRUD operations
+- File uploads (e.g. driver’s license images) are supported.
+- Styled with Bootstrap 5 for a modern, responsive interface.
+- Deployed on Heroku with an integrated MySQL database (AWS RDS).
 
-**Optional features (time-permitting):**
-- AJAX for dynamic updates
-- Email notifications
-- Online payments (Stripe API)
-- Third-party logins (e.g., Google OAuth)
+---
+
+## Live Demo
+**Heroku Deployment:**  
+[CarGo Application](https://cargo-prod-b8d4c89a3453.herokuapp.com/)  
+*(Replace with your live Heroku URL if different.)*
+
+---
+
+## Key Features
+- User registration, authentication, and role-based authorization
+- Search vehicles by category or availability
+- Prevents double-booking with overlap validation
+- Secure Stripe payments (PaymentIntent workflow)
+- Reservation and payment confirmation screens
+- File upload for driver license verification
+- Admin dashboard for managing users, cars, and reservations
+- Real-time feedback (success/error alerts)
 
 ---
 
 ## Technologies Used
-- Spring Boot
-- Thymeleaf
-- Spring Security
-- MySQL (or Amazon RDS)
-- Bootstrap 5
-- AWS EC2 / Elastic Beanstalk
-- Amazon S3
+| Category | Tools / Frameworks                          |
+|-----------|---------------------------------------------|
+| Backend | Java 17, Spring Boot 3.x, Spring MVC        |
+| Frontend | Thymeleaf, Bootstrap 5                      |
+| Security | Spring Security (role-based authentication) |
+| Database | MySQL (AWS RDS)                             |
+| Payments | Stripe API (PaymentIntent + Webhooks)       |
+| Deployment | Heroku (via Git + Maven)                    |
+| Build Tool | Maven                                       |
 
 ---
 
-## Additional Libraries & APIs
-- Stripe API (for payments).
+## Architecture Overview
+CarGo follows a Model–View–Controller (MVC) architecture:
+
+- **Model** – JPA entities (User, Vehicle, Reservation, etc.)
+- **View** – Thymeleaf templates styled with Bootstrap
+- **Controller** – Spring MVC controllers handling business logic and data flow
+- **Service Layer** – Encapsulates reservation validation, Stripe integration, and business rules
 
 ---
 
-## Challenges
-- Implementing car availability checks based on overlapping reservation end/start dates.
+## Integrations
+- **Stripe API** – Handles secure payment processing (PaymentIntent, confirmation, and webhooks).
+- **Heroku + RDS** – Cloud-hosted deployment with MySQL backend.
 
 ---
 
-## Planned Application URLs
-- `/login` → Login page
-- `/register` → Registration page
-- `/` → Home / index (car catalog)
-- `/cars` → List & search cars
-- `/dashboard` → Customer dashboard (bookings & uploads)
-- `/admin/users` → CRUD for users (read-only)
-- `/admin/cars` → CRUD for cars
-- `/admin/cars/{id}` → Car details
-- `/admin/reservations` → Manage reservations
+## Challenges and Learnings
+- Implementing reliable date-overlap detection for car reservations.
+- Handling Stripe payment flows with asynchronous webhooks.
+- Ensuring secure routes and CSRF protection for sensitive endpoints.
+- Designing a visually clean and user-friendly interface.
 
 ---
 
-## Database Design
-*(ER diagram or schema will be added here once finalized.)*
+## Application Routes
+
+### General and Public
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/` | Home page (vehicle catalog) |
+| GET | `/contact` | Contact information page |
 
 ---
 
-## Use-Case Diagram
-*(Include UML diagram image when available.)*
+### Authentication
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/login` | Display login form |
+| POST | `/login` | Process login |
+| GET | `/register` | Show registration form |
+| POST | `/register` | Register new user |
 
 ---
 
-## Mockups
-### Car Selection / Reservation Page
-- Search by: start date, end date, vehicle type/subtype filter.
-- Display available cars matching the criteria.
+### Admin Panel
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/admin/dashboard` | Admin dashboard |
+| GET | `/admin/users` | View all users |
+| POST | `/admin/users/{id}` | Promote user to Admin |
+| POST | `/admin/demote/{id}` | Demote Admin to User |
 
-### Car Details Page
-- Show car information, average rating, and number of times rented.
+---
+
+### Vehicle Management
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/admin/vehicles` | View all vehicles |
+| GET | `/admin/vehicle/add` | Show form to add a new vehicle |
+| POST | `/admin/vehicle/add` | Save a new vehicle |
+| GET | `/admin/vehicle/edit/{id}` | Edit a vehicle |
+| POST | `/admin/vehicle/edit/{id}` | Update vehicle |
+| POST | `/admin/vehicle/delete/{id}` | Delete vehicle |
+| GET | `/vehicles` | Browse vehicles (public) |
+| GET | `/vehicles/available` | Search for available vehicles |
 
 ---
 
-## Deployment (Planned)
-- AWS EC2 for hosting the application.
-- Amazon RDS for database.
-- Amazon S3 for storing user uploads.
+### Category Management
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/admin/categories` | View all categories |
+| GET | `/admin/category/add` | Show add category form |
+| POST | `/admin/category/add` | Add category |
+| GET | `/admin/category/edit/{id}` | Edit category |
+| POST | `/admin/category/edit/{id}` | Update category |
+| POST | `/admin/category/delete/{id}` | Delete category |
 
 ---
+
+### Reservation Management
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/admin/reservations` | List all reservations |
+| GET | `/admin/reservations/add` | Add reservation form |
+| POST | `/admin/reservations/add` | Create reservation |
+| GET | `/admin/reservations/edit/{id}` | Edit reservation form |
+| POST | `/admin/reservations/edit/{id}` | Update reservation |
+| POST | `/admin/reservations/delete/{id}` | Delete reservation |
+| GET | `/user/reservations` | Show logged-in user's reservations |
+| POST | `/user/reservations/delete/{id}` | Delete user's reservation |
+| POST | `/reservations/quick-book` | Quick booking (user flow) |
+
+---
+
+### Payment (Stripe Integration)
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/checkout/{reservationId}` | Checkout page for a reservation |
+| POST | `/api/payments/create-intent` | Create Stripe PaymentIntent |
+| GET | `/payment/confirm` | Payment confirmation screen |
+| POST | `/stripe/webhook` | Stripe webhook handler for payment updates |
+
+---
+
+### Reservation Hold API
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/api/reservations/{id}/hold` | Check if reservation hold is still valid |
+
+---
+
+## Deployment
+CarGo is deployed on Heroku using Git-based CI/CD.
+
+- **App Server:** Heroku Dyno running Spring Boot
+- **Database:** AWS (RDS) MySQL
+- **Environment Variables:** Managed via Heroku Config Vars
+- **Stripe Webhooks:** Configured for `/stripe/webhook` endpoint
+
+### Example Deployment Steps
+```bash
+# Build project
+mvn clean package
+
+# Login to Heroku
+heroku login
+
+# Deploy
+git push heroku main
+```
 
 ## Project Status
-Currently in development phase. Stay tuned for updates. 
+The project is **currently under active development** — core features are functional, with payment and cloud integration coming next.
 
+---
+
+## Contributors
+- [@kirththiga](https://github.com/kirththiga)
+- [@aleksandro](https://github.com/aleksandro)
+
+---
+
+## 🪪 License
+This project is intended for **academic and educational purposes**.  
+© 2025 Kirththiga Murugupillai & Aleksandro Echavarria-Mercier. All rights reserved.
